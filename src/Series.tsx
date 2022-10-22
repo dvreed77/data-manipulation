@@ -19,12 +19,27 @@ export class Series {
 
   lag(n: number, trim = false) {
     if (!this.values) return this;
-    for (let i = 0; i < n; i++) {
-      this.values.unshift(NaN);
+
+    if (n === 0) return this;
+
+    if (n > 0) {
+      for (let i = 0; i < n; i++) {
+        this.values.unshift(NaN);
+      }
+
+      if (trim) {
+        this.values = this.values.slice(0, -n);
+      }
     }
 
-    if (trim) {
-      this.values = this.values.slice(0, -n);
+    if (n < 0) {
+      for (let i = 0; i < -n; i++) {
+        this.values.push(NaN);
+      }
+
+      if (trim) {
+        this.values = this.values.slice(-n);
+      }
     }
 
     return this;

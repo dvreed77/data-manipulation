@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { DraggableRect } from "./DraggableRect";
-import { MovableBar } from "./MovableBar";
+// import { MovableBar } from "./MovableBar";
 import { ProblemConfig } from "./types";
 
 interface IProps {
@@ -86,35 +86,23 @@ export const ProblemConfigComponent = ({
             width={step}
             height={canvasHeight}
             fill={"orange"}
+            opacity={0.5}
           />
           <DraggableRect
             x1={start}
             x2={stop}
             onChange={handleDragChange}
-            min={0}
+            min={-step}
             max={forecastPoint}
             step={step}
             height={canvasHeight}
+            resizable={true}
+            color="green"
+            offset={step}
           />
-          {/* <MovableBar
-            x={start}
-            onChange={handleStartChange}
-            min={0}
-            max={stop - step}
-            step={step}
-            height={canvasHeight}
-          />
-          <MovableBar
-            x={stop}
-            onChange={handleStopChange}
-            min={start + step}
-            max={canvasWidth}
-            step={step}
-            height={canvasHeight}
-          /> */}
-          <MovableBar
-            x={horizon}
-            width={step}
+          <DraggableRect
+            x1={horizon}
+            x2={horizon + step}
             onChange={handleHorizonChange}
             min={forecastPoint + step}
             max={canvasWidth}

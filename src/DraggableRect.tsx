@@ -1,4 +1,5 @@
 import { useState, MouseEventHandler } from "react";
+import { MovableHandle } from "./MovableBar";
 import { roundNearest } from "./utils";
 
 interface IProps {
@@ -9,6 +10,9 @@ interface IProps {
   max: number;
   step: number;
   height: number;
+  resizable?: boolean;
+  color?: string;
+  offset?: number;
 }
 export const DraggableRect = ({
   x1,
@@ -18,6 +22,9 @@ export const DraggableRect = ({
   max,
   step,
   height,
+  resizable = false,
+  color = "black",
+  offset = 0,
 }: IProps) => {
   const width = x2 - x1;
   const handleMouseDown: MouseEventHandler<SVGRectElement> = (e) => {
@@ -46,15 +53,45 @@ export const DraggableRect = ({
       { once: true }
     );
   };
+
+  function handleStartChange(v: number) {
+    onChange(v - step, x2);
+  }
+
+  function handleStopChange(v: number) {
+    onChange(x1, v - step);
+  }
   return (
-    <rect
-      x={x1}
-      width={width}
-      height={height}
-      stroke="black"
-      fill="rgba(211, 211, 211, 0)"
-      onMouseDown={handleMouseDown}
-      style={{ cursor: "move" }}
-    />
+    <g>
+      <rect
+        x={x1 + offset}
+        width={width}
+        height={height}
+        fill={color}
+        opacity={0.5}
+        onMouseDown={handleMouseDown}
+        style={{ cursor: "move" }}
+      />
+      {resizable && (
+        <>
+          <MovableHandle
+            x={x1 + offset} //TODO(dreed): figure out why its +1
+            onChange={handleStartChange}
+            min={0}
+            max={x2 - step}
+            step={step}
+            height={height}
+          />
+          <MovableHandle
+            x={x2 + offset}
+            onChange={handleStopChange}
+            min={x1 + offset}
+            max={max + offset}
+            step={step}
+            height={height}
+          />
+        </>
+      )}
+    </g>
   );
 };

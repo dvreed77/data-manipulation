@@ -97,6 +97,7 @@ function App() {
     feWindow:
       problemConfig.featureEngineeringEnd -
       problemConfig.featureEngineeringStart,
+    forecastHorizon: problemConfig.forecastHorizon,
   });
 
   const handleProblemChange = (newProblemConfig: ProblemConfig) => {
@@ -112,6 +113,10 @@ function App() {
           {problemConfig.featureEngineeringEnd -
             problemConfig.featureEngineeringStart}
         </h2>
+        <h2>
+          Feature Engineering Window:{" "}
+          {`${-problemConfig.featureEngineeringStart} ${-problemConfig.featureEngineeringEnd}`}
+        </h2>
         <h2>Data Gap: {-problemConfig.featureEngineeringEnd}</h2>
         <h2>Forecast Horizon: {problemConfig.forecastHorizon}</h2>
       </div>
@@ -122,22 +127,18 @@ function App() {
         onChange={handleProblemChange}
       />
       <svg width={1000} height={1000}>
-        {/* {s.draw({ cellSize, x: 0, y: 0 })}
-        {s.lag(1, true).draw({ cellSize, x: cellSize + 1, y: 0 })}
-        {s.lag(1, true).draw({ cellSize, x: 2 * (cellSize + 1), y: 0 })}
-        {s.lag(1, true).draw({ cellSize, x: 3 * (cellSize + 1), y: 0 })}
-        {w.draw({ cellSize })} */}
-        {df1.draw({ cellSize })}
+        {df1.draw()}
 
         <rect
-          x={10 + cellSize} //TODO(dreed): hardcoding gap here
+          x={df1.marginLeft + df1.cellSize + df1.gap1} //TODO(dreed): hardcoding gap here
           y={
-            10 +
-            (cellSize + 1) *
-              (forecastPt + problemConfig.featureEngineeringStart)
+            df1.marginTop +
+            (df1.cellSize + df1.cellGap) *
+              (forecastPt + problemConfig.featureEngineeringStart) +
+            df1.cellSize
           }
           //TODO(dreed): hardcoding padding of 1 here
-          width={df1.columns.length * (cellSize + 1) - 1}
+          width={df1.dataWidth}
           height={
             (cellSize + 1) *
             (problemConfig.featureEngineeringEnd -
@@ -147,22 +148,40 @@ function App() {
           fill="none"
         />
         <rect
-          x={10 + cellSize + df1.columns.length * (cellSize + 1)} //TODO(dreed): hardcoding gap here
-          y={10 + (cellSize + 1) * (forecastPt + problemConfig.forecastHorizon)}
-          //TODO(dreed): hardcoding padding of 1 here
+          x={
+            df1.marginLeft + df1.cellSize + df1.gap1 + df1.dataWidth + df1.gap2
+          }
+          y={
+            df1.marginTop +
+            (cellSize + 1) * (forecastPt + problemConfig.forecastHorizon)
+          }
           width={cellSize}
           height={cellSize}
           stroke="black"
           fill="none"
         />
 
-        <g transform={`translate(${(cellSize + 1) * 3 + 50},0)`}>
-          {df2.draw({ cellSize })}
+        <g transform={`translate(${df1.width + 50}, 0)`}>
+          {df2.draw()}
           <rect
-            x={10 + cellSize} //TODO(dreed): hardcoding gap here
-            y={10 + (cellSize + 1) * forecastPt}
+            x={df2.marginLeft + df2.cellSize + df2.gap1}
+            y={df2.marginTop + (df2.cellSize + df2.cellGap) * forecastPt}
+            width={df2.dataWidth}
+            height={cellSize}
+            stroke="black"
+            fill="none"
+          />
+          <rect
+            x={
+              df2.marginLeft +
+              df2.cellSize +
+              df2.gap1 +
+              df2.dataWidth +
+              df2.gap2
+            } //TODO(dreed): hardcoding gap here
+            y={df2.marginTop + (df2.cellSize + df2.cellGap) * forecastPt}
             //TODO(dreed): hardcoding padding of 1 here
-            width={df2.columns.length * (cellSize + 1)}
+            width={cellSize}
             height={cellSize}
             stroke="black"
             fill="none"

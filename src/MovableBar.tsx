@@ -8,23 +8,23 @@ interface IProps {
   max: number;
   step: number;
   height: number;
-  width: number;
   color?: string;
+  opacity?: number;
 }
 
-export const MovableBar = ({
+export const MovableHandle = ({
   x,
   onChange,
   min,
   max,
   step,
   height,
-  width,
   color = "black",
+  opacity = 1,
 }: IProps) => {
   const [dragging, setDragging] = useState(false);
 
-  const handleMouseDown: MouseEventHandler<SVGRectElement> = (e) => {
+  const handleMouseDown: MouseEventHandler<SVGLineElement> = (e) => {
     let lastX = NaN;
     const initialStart = x;
     e.preventDefault();
@@ -53,16 +53,15 @@ export const MovableBar = ({
     );
   };
   return (
-    <rect
-      x={x}
-      y={0}
-      width={width}
-      height={height}
-      // stroke="black"
-      fill={color}
-      // strokeWidth={dragging ? 4 * step : 10}
-      // opacity={0}
-      style={{ cursor: "move" }}
+    <line
+      x1={x}
+      x2={x}
+      y1={0}
+      y2={height}
+      stroke="black"
+      strokeWidth={dragging ? 4 * 10 : 10}
+      opacity={0}
+      style={{ cursor: "ew-resize" }}
       onMouseDown={handleMouseDown}
     />
   );
