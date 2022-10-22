@@ -33,7 +33,7 @@ export class Series {
   draw({ cellSize = 10, x = 10, y = 10 }) {
     if (!this.values) return null;
     return (
-      <g transform={`translate(${x}, ${y})`}>
+      <g>
         {this.values.map((c, i) => (
           <g key={i}>
             <rect

@@ -80,43 +80,29 @@ export const ProblemConfigComponent = ({
             fill="None"
             stroke="#aaa"
           />
-          {/* <rect
-            x={start}
+          <rect
+            x={forecastPoint}
             y={0}
-            width={width}
+            width={step}
             height={canvasHeight}
-            stroke="black"
-            fill="None"
-          /> */}
-          <line
-            x1={horizon}
-            x2={horizon}
-            y1={0}
-            y2={canvasHeight}
-            stroke="black"
-          />
-          <line
-            x1={forecastPoint}
-            x2={forecastPoint}
-            y1={0}
-            y2={canvasHeight}
-            stroke="black"
+            fill={"orange"}
           />
           <DraggableRect
             x1={start}
             x2={stop}
             onChange={handleDragChange}
             min={0}
-            max={forecastPoint - step}
+            max={forecastPoint}
             step={step}
             height={canvasHeight}
           />
-          <MovableBar
+          {/* <MovableBar
             x={start}
             onChange={handleStartChange}
             min={0}
             max={stop - step}
             step={step}
+            height={canvasHeight}
           />
           <MovableBar
             x={stop}
@@ -124,13 +110,17 @@ export const ProblemConfigComponent = ({
             min={start + step}
             max={canvasWidth}
             step={step}
-          />
+            height={canvasHeight}
+          /> */}
           <MovableBar
             x={horizon}
+            width={step}
             onChange={handleHorizonChange}
-            min={start + step}
+            min={forecastPoint + step}
             max={canvasWidth}
             step={step}
+            height={canvasHeight}
+            color="red"
           />
         </g>
       </svg>

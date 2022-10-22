@@ -102,12 +102,19 @@ function App() {
   const handleProblemChange = (newProblemConfig: ProblemConfig) => {
     setProblemConfig(newProblemConfig);
   };
+
+  const forecastPt = 10;
   return (
     <div className="App">
-      <h2>
-        {problemConfig.featureEngineeringStart},{" "}
-        {problemConfig.featureEngineeringEnd}
-      </h2>
+      <div>
+        <h2>
+          Feature Engineering Window Width:{" "}
+          {problemConfig.featureEngineeringEnd -
+            problemConfig.featureEngineeringStart}
+        </h2>
+        <h2>Data Gap: {-problemConfig.featureEngineeringEnd}</h2>
+        <h2>Forecast Horizon: {problemConfig.forecastHorizon}</h2>
+      </div>
       <ProblemConfigComponent
         problemConfig={problemConfig}
         featureEngineeringMax={10}
@@ -122,8 +129,44 @@ function App() {
         {w.draw({ cellSize })} */}
         {df1.draw({ cellSize })}
 
+        <rect
+          x={10 + cellSize} //TODO(dreed): hardcoding gap here
+          y={
+            10 +
+            (cellSize + 1) *
+              (forecastPt + problemConfig.featureEngineeringStart)
+          }
+          //TODO(dreed): hardcoding padding of 1 here
+          width={df1.columns.length * (cellSize + 1) - 1}
+          height={
+            (cellSize + 1) *
+            (problemConfig.featureEngineeringEnd -
+              problemConfig.featureEngineeringStart)
+          }
+          stroke="black"
+          fill="none"
+        />
+        <rect
+          x={10 + cellSize + df1.columns.length * (cellSize + 1)} //TODO(dreed): hardcoding gap here
+          y={10 + (cellSize + 1) * (forecastPt + problemConfig.forecastHorizon)}
+          //TODO(dreed): hardcoding padding of 1 here
+          width={cellSize}
+          height={cellSize}
+          stroke="black"
+          fill="none"
+        />
+
         <g transform={`translate(${(cellSize + 1) * 3 + 50},0)`}>
           {df2.draw({ cellSize })}
+          <rect
+            x={10 + cellSize} //TODO(dreed): hardcoding gap here
+            y={10 + (cellSize + 1) * forecastPt}
+            //TODO(dreed): hardcoding padding of 1 here
+            width={df2.columns.length * (cellSize + 1)}
+            height={cellSize}
+            stroke="black"
+            fill="none"
+          />
         </g>
       </svg>
     </div>
