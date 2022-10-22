@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { MouseEventHandler, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import "./App.css";
 import * as d3 from "d3";
+import { Slider } from "@mui/material";
+import { DataFrame } from "./Dataframe";
+import { ProblemConfig } from "./types";
+import { ProblemConfigComponent } from "./ProblemConfigComponent";
 
 const palettes: { [key: string]: (t: number) => string } = {
   BuGn: d3.interpolateBuGn,
@@ -15,29 +19,26 @@ class Window {
   constructor(cells: T_Cell[]) {
     this.cells = cells;
   }
-}
 
-class DataFrame {
-  series: Series[] = [];
-  constructor(series: Series[]) {
-    this.series = series;
-  }
-}
+  draw({ cellSize = 10 }) {
+    const nCells = this.cells.length;
+    const x1 = this.cells[0][0] * cellSize;
+    const y1 = this.cells[0][1] * cellSize;
+    const x2 = (this.cells[nCells - 1][0] + 1) * cellSize;
+    const y2 = (this.cells[nCells - 1][1] + 1) * cellSize;
+    const width = x2 - x1;
+    const height = y2 - y1;
 
-class Series {
-  values: number[];
-  constructor(values: number[]) {
-    this.values = values;
-  }
-
-  lag(n: number, trim = false) {
-    for (let i = 0; i < n; i++) {
-      this.values.unshift(NaN);
-    }
-
-    if (trim) {
-      this.values = this.values.slice(0, -n);
-    }
+    return (
+      <rect
+        x={x1}
+        y={y1}
+        width={width}
+        height={height}
+        fill="None"
+        stroke="black"
+      />
+    );
   }
 }
 
@@ -74,27 +75,56 @@ const Column = ({
 };
 
 function App() {
-  const cellSize = 15;
+  const cellSize = 20;
 
-  const nRows = 20;
+  const w = new Window([
+    // [0, 0],
+    [0, 1],
+    [0, 2],
+    [0, 3],
+  ]);
 
-  const columns = [
-    { name: "Date", palette: "BuGn" },
-    { name: "F1", palette: "BuPu" },
-    { name: "Target", palette: "GnBu" },
-  ];
+  const [problemConfig, setProblemConfig] = useState<ProblemConfig>({
+    featureEngineeringStart: -5,
+    featureEngineeringEnd: -3,
+    forecastHorizon: 3,
+  });
 
+  let df1 = new DataFrame().generate(3, 20);
+
+  let df2 = df1.copy().transform({
+    gap: -problemConfig.featureEngineeringEnd,
+    feWindow:
+      problemConfig.featureEngineeringEnd -
+      problemConfig.featureEngineeringStart,
+  });
+
+  const handleProblemChange = (newProblemConfig: ProblemConfig) => {
+    setProblemConfig(newProblemConfig);
+  };
   return (
     <div className="App">
+      <h2>
+        {problemConfig.featureEngineeringStart},{" "}
+        {problemConfig.featureEngineeringEnd}
+      </h2>
+      <ProblemConfigComponent
+        problemConfig={problemConfig}
+        featureEngineeringMax={10}
+        forecastHorizonMax={10}
+        onChange={handleProblemChange}
+      />
       <svg width={1000} height={1000}>
-        {columns.map(({ palette }, i) => (
-          <Column
-            nRows={nRows}
-            cellSize={cellSize}
-            x={i * (cellSize + 1)}
-            palette={palette}
-          />
-        ))}
+        {/* {s.draw({ cellSize, x: 0, y: 0 })}
+        {s.lag(1, true).draw({ cellSize, x: cellSize + 1, y: 0 })}
+        {s.lag(1, true).draw({ cellSize, x: 2 * (cellSize + 1), y: 0 })}
+        {s.lag(1, true).draw({ cellSize, x: 3 * (cellSize + 1), y: 0 })}
+        {w.draw({ cellSize })} */}
+        {df1.draw({ cellSize })}
+
+        <g transform={`translate(${(cellSize + 1) * 3 + 50},0)`}>
+          {df2.draw({ cellSize })}
+        </g>
       </svg>
     </div>
   );
