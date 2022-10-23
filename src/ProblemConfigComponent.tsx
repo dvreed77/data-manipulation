@@ -30,28 +30,11 @@ export const ProblemConfigComponent = ({
   const { featureEngineeringStart, featureEngineeringEnd, forecastHorizon } =
     problemConfig;
 
-  const start = xScale(featureEngineeringStart);
+  const step = canvasWidth / (forecastHorizonMax + featureEngineeringMax);
+  const start = xScale(featureEngineeringStart - 1);
   const stop = xScale(featureEngineeringEnd);
   const horizon = xScale(forecastHorizon);
   const forecastPoint = xScale(0);
-
-  const width = stop - start;
-
-  const step = canvasWidth / (forecastHorizonMax + featureEngineeringMax);
-
-  const handleStartChange = (v: number) => {
-    onChange({
-      ...problemConfig,
-      featureEngineeringStart: Math.round(xScale.invert(v)),
-    });
-  };
-
-  const handleStopChange = (v: number) => {
-    onChange({
-      ...problemConfig,
-      featureEngineeringEnd: Math.round(xScale.invert(v)),
-    });
-  };
 
   const handleHorizonChange = (v: number) => {
     onChange({
@@ -63,7 +46,7 @@ export const ProblemConfigComponent = ({
   const handleDragChange = (a: number, b: number) => {
     onChange({
       ...problemConfig,
-      featureEngineeringStart: Math.round(xScale.invert(a)),
+      featureEngineeringStart: Math.round(xScale.invert(a)) + 1,
       featureEngineeringEnd: Math.round(xScale.invert(b)),
     });
   };
@@ -72,6 +55,39 @@ export const ProblemConfigComponent = ({
     <div>
       <svg width={svgWidth} height={svgHeight}>
         <g transform={`translate(${padding}, ${padding})`}>
+          <g transform={`translate(${forecastPoint}, -10)`}>
+            <path
+              d={`M 0 0 L ${step} 0 L ${step / 2} 10 Z`}
+              fill="orange"
+              opacity={0.5}
+            />
+          </g>
+          {Array.from({
+            length: featureEngineeringMax + forecastHorizonMax,
+          }).map((_, i) => {
+            return (
+              <g key={i}>
+                <line
+                  key={i}
+                  x1={i * step}
+                  y1={0}
+                  x2={i * step}
+                  y2={canvasHeight}
+                  stroke="#ddd"
+                  strokeWidth={1}
+                />
+                <text
+                  x={i * step + step / 2}
+                  y={canvasHeight / 2}
+                  textAnchor="middle"
+                  alignmentBaseline="mathematical"
+                  fill="#aaa"
+                >
+                  {i - 10}
+                </text>
+              </g>
+            );
+          })}
           <rect
             x={0}
             y={0}
@@ -104,7 +120,7 @@ export const ProblemConfigComponent = ({
             x1={horizon}
             x2={horizon + step}
             onChange={handleHorizonChange}
-            min={forecastPoint + step}
+            min={forecastPoint}
             max={canvasWidth}
             step={step}
             height={canvasHeight}

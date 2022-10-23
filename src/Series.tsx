@@ -1,19 +1,43 @@
+import { colorGenerator } from "./utils";
+
+type Cell = {
+  value: string;
+  color: string;
+};
+
 export class Series {
-  values?: number[];
+  values?: Cell[];
+  palette = "Greens";
   constructor(values?: number[]) {
     if (values) {
-      this.values = values;
+      const gen = colorGenerator({
+        palette: this.palette,
+        nColors: values.length,
+      });
+      this.values = values.map((v, i) => ({
+        value: v.toString(),
+        color: gen(i),
+      }));
     }
   }
 
   copy() {
     if (!this.values) return new Series();
 
-    return new Series([...this.values]);
+    const s = new Series();
+    s.values = this.values.map((v) => ({ ...v }));
+    return s;
   }
 
-  generate(nRows = 10) {
-    this.values = Array.from({ length: nRows }, (_, i) => i);
+  generate(nRows = 10, prefix = "") {
+    const gen = colorGenerator({
+      palette: this.palette,
+      nColors: nRows,
+    });
+    this.values = Array.from({ length: nRows }, (_, i) => ({
+      value: `${prefix}${i}`,
+      color: gen(i),
+    }));
     return this;
   }
 
@@ -24,7 +48,7 @@ export class Series {
 
     if (n > 0) {
       for (let i = 0; i < n; i++) {
-        this.values.unshift(NaN);
+        this.values.unshift({ value: "--", color: "white" });
       }
 
       if (trim) {
@@ -34,7 +58,7 @@ export class Series {
 
     if (n < 0) {
       for (let i = 0; i < -n; i++) {
-        this.values.push(NaN);
+        this.values.push({ value: "--", color: "white" });
       }
 
       if (trim) {
@@ -49,23 +73,23 @@ export class Series {
     if (!this.values) return null;
     return (
       <g>
-        {this.values.map((c, i) => (
+        {this.values.map(({ value, color }, i) => (
           <g key={i}>
             <rect
               x={0}
               y={i * (cellSize + 1)}
               width={cellSize}
               height={cellSize}
-              fill={"yellow"}
+              fill={color}
             />
             <text
               x={cellSize / 2}
               y={i * (cellSize + 1) + cellSize / 2}
-              fontSize={cellSize * 0.5}
+              fontSize={cellSize * 0.4}
               textAnchor="middle"
               alignmentBaseline="mathematical"
             >
-              {isNaN(c) ? "--" : c}
+              {value}
             </text>
           </g>
         ))}
