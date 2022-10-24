@@ -72,12 +72,9 @@ export class DataFrame {
     const lastGoodIdx =
       ensure(this.target?.values?.length) - forecastHorizon - 1;
 
-    // console.log(lastGoodIdx);
     const lastTarget = ensure(this.target?.values)[lastGoodIdx];
 
-    console.log(lastTarget);
-
-    for (let i = 1; i < forecastHorizon + gap; i++) {
+    for (let i = 1; i < forecastHorizon + gap + 1; i++) {
       ensure(this.target?.values)[lastGoodIdx + i] = {
         prefix: lastTarget.prefix,
         value: lastTarget.value + i,
