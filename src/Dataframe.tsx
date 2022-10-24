@@ -27,11 +27,11 @@ export class DataFrame {
     }
   }
 
-  generate(nCols = 3, nRows = 15) {
-    this.timeIndex = new Series().generate(nRows, "d_");
-    this.target = new Series().generate(nRows, "t_");
+  generate(nCols = 3, nRows = 15, start = 0) {
+    this.timeIndex = new Series().generate(nRows, "d_", start);
+    this.target = new Series().generate(nRows, "t_", start);
     this.columns = Array.from({ length: nCols }, () =>
-      new Series().generate(nRows)
+      new Series().generate(nRows, "", start)
     );
     return this;
   }
@@ -48,6 +48,17 @@ export class DataFrame {
   transform({ gap = 0, feWindow = 0, forecastHorizon = 1 }) {
     if (!this.columns) return this;
 
+    const lastTime = ensure(this.timeIndex?.values)[
+      ensure(this.timeIndex?.values?.length) - 1
+    ];
+    for (let i = 0; i < gap; i++) {
+      ensure(this.timeIndex?.values).push({
+        prefix: lastTime.prefix,
+        value: lastTime.value + i + 1,
+        color: lastTime.color,
+      });
+    }
+
     const newColumns: Series[] = [];
     this.columns.forEach((c) => {
       for (let i = 0; i < feWindow; i++) {
@@ -57,6 +68,22 @@ export class DataFrame {
     });
     this.columns = newColumns;
     this.target = this.target?.copy().lag(-forecastHorizon, true);
+
+    const lastGoodIdx =
+      ensure(this.target?.values?.length) - forecastHorizon - 1;
+
+    // console.log(lastGoodIdx);
+    const lastTarget = ensure(this.target?.values)[lastGoodIdx];
+
+    console.log(lastTarget);
+
+    for (let i = 1; i < forecastHorizon + gap; i++) {
+      ensure(this.target?.values)[lastGoodIdx + i] = {
+        prefix: lastTarget.prefix,
+        value: lastTarget.value + i,
+        color: "red",
+      };
+    }
     return this;
   }
 

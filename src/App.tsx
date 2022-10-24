@@ -3,6 +3,7 @@ import { DataFrame } from "./Dataframe";
 import { ProblemConfig } from "./types";
 import { ProblemConfigComponent } from "./ProblemConfigComponent";
 import { ProblemDataDisplay } from "./ProblemDataDisplay";
+import { Data2 } from "./Data2";
 
 function App() {
   const cellSize = 20;
@@ -33,15 +34,19 @@ function App() {
   const forecastPt = 10;
   return (
     <div className="mx-auto w-1/2">
-      <div className="mb-3">
-        <ProblemDataDisplay problemConfig={problemConfig} />
+      <div className="sticky top-0 bg-white border-b py-2">
+        <div className="mb-3">
+          <ProblemDataDisplay problemConfig={problemConfig} />
+        </div>
+        <ProblemConfigComponent
+          problemConfig={problemConfig}
+          featureEngineeringMax={10}
+          forecastHorizonMax={10}
+          onChange={handleProblemChange}
+        />
       </div>
-      <ProblemConfigComponent
-        problemConfig={problemConfig}
-        featureEngineeringMax={10}
-        forecastHorizonMax={10}
-        onChange={handleProblemChange}
-      />
+      <h2 className="mt-5">Model Training</h2>
+      <hr />
       <svg width={1000} height={1000}>
         {df1.draw()}
 
@@ -106,6 +111,9 @@ function App() {
           />
         </g>
       </svg>
+      <h2 className="mt-5">Prediction</h2>
+      <hr />
+      <Data2 problemConfig={problemConfig} />
     </div>
   );
 }

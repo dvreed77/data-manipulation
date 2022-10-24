@@ -1,8 +1,9 @@
 import { colorGenerator } from "./utils";
 
 type Cell = {
-  value: string;
+  value: number;
   color: string;
+  prefix?: string;
 };
 
 export class Series {
@@ -15,7 +16,7 @@ export class Series {
         nColors: values.length,
       });
       this.values = values.map((v, i) => ({
-        value: v.toString(),
+        value: v,
         color: gen(i),
       }));
     }
@@ -29,13 +30,14 @@ export class Series {
     return s;
   }
 
-  generate(nRows = 10, prefix = "") {
+  generate(nRows = 10, prefix = "", start = 0) {
     const gen = colorGenerator({
       palette: this.palette,
       nColors: nRows,
     });
     this.values = Array.from({ length: nRows }, (_, i) => ({
-      value: `${prefix}${i}`,
+      value: i + start,
+      prefix,
       color: gen(i),
     }));
     return this;
@@ -48,7 +50,7 @@ export class Series {
 
     if (n > 0) {
       for (let i = 0; i < n; i++) {
-        this.values.unshift({ value: "--", color: "white" });
+        this.values.unshift({ value: NaN, color: "white" });
       }
 
       if (trim) {
@@ -58,7 +60,7 @@ export class Series {
 
     if (n < 0) {
       for (let i = 0; i < -n; i++) {
-        this.values.push({ value: "--", color: "white" });
+        this.values.push({ value: NaN, color: "white" });
       }
 
       if (trim) {
@@ -73,7 +75,7 @@ export class Series {
     if (!this.values) return null;
     return (
       <g>
-        {this.values.map(({ value, color }, i) => (
+        {this.values.map(({ value, color, prefix }, i) => (
           <g key={i}>
             <rect
               x={0}
@@ -89,7 +91,7 @@ export class Series {
               textAnchor="middle"
               alignmentBaseline="mathematical"
             >
-              {value}
+              {isNaN(value) ? "--" : `${prefix}${value}`}
             </text>
           </g>
         ))}
