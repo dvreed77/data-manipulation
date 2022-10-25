@@ -1,3 +1,4 @@
+import { Bracket } from "./Bracket";
 import { Series } from "./Series";
 
 function ensure<T>(value: T | undefined | null): T {
@@ -6,6 +7,7 @@ function ensure<T>(value: T | undefined | null): T {
   }
   return value;
 }
+
 export class DataFrame {
   columns: Series[] = [];
   target?: Series;
@@ -101,6 +103,7 @@ export class DataFrame {
     if (!this.columns) return null;
 
     const cellSize = this.cellSize;
+
     return (
       <>
         <g transform={`translate(${this.marginLeft}, 30)`}>

@@ -1,3 +1,4 @@
+import { Bracket } from "./Bracket";
 import { DataFrame } from "./Dataframe";
 import { ProblemConfig } from "./types";
 
@@ -80,6 +81,33 @@ export const Data2 = ({ problemConfig, drawWindows = false }: IProps) => {
       fill="none"
     />
   );
+
+  const fmBounds = {
+    lower: -problemConfig.featureEngineeringStart,
+    upper: 10 - problemConfig.forecastHorizon,
+  };
+
+  const fmBounds2 = {
+    lower: Math.max(
+      -problemConfig.featureEngineeringStart,
+      10 - problemConfig.forecastHorizon
+    ),
+    upper:
+      10 -
+      problemConfig.forecastHorizon +
+      (problemConfig.forecastHorizon - problemConfig.featureEngineeringEnd),
+  };
+
+  const fmBounds3 = {
+    lower: 10 - problemConfig.forecastHorizon,
+    upper: Math.max(
+      -problemConfig.featureEngineeringStart,
+      10 - problemConfig.forecastHorizon
+    ),
+  };
+
+  console.log(fmBounds);
+
   return (
     <svg width={1000} height={1000}>
       {df1.draw()}
@@ -92,6 +120,53 @@ export const Data2 = ({ problemConfig, drawWindows = false }: IProps) => {
 
       <g transform={`translate(${df1.width + 50}, 0)`}>
         {df2.draw()}
+        <g
+          transform={`translate(${df2.width + 20}, ${
+            df2.marginTop + fmBounds.lower * (df2.cellSize + df2.cellGap)
+          })`}
+        >
+          {fmBounds.upper - fmBounds.lower > 0 && (
+            <Bracket
+              width={10}
+              height={
+                (fmBounds.upper - fmBounds.lower) * (df2.cellSize + df2.cellGap)
+              }
+              label="We already know this target"
+            />
+          )}
+        </g>
+        <g
+          transform={`translate(${df2.width + 20}, ${
+            df2.marginTop + fmBounds2.lower * (df2.cellSize + df2.cellGap)
+          })`}
+        >
+          {fmBounds2.upper - fmBounds2.lower > 0 && (
+            <Bracket
+              width={10}
+              height={
+                (fmBounds2.upper - fmBounds2.lower) *
+                (df2.cellSize + df2.cellGap)
+              }
+              label="This is what we can use to predict"
+            />
+          )}
+        </g>
+        <g
+          transform={`translate(${df2.width + 20}, ${
+            df2.marginTop + fmBounds3.lower * (df2.cellSize + df2.cellGap)
+          })`}
+        >
+          {fmBounds3.upper - fmBounds3.lower > 0 && (
+            <Bracket
+              width={10}
+              height={
+                (fmBounds3.upper - fmBounds3.lower) *
+                (df2.cellSize + df2.cellGap)
+              }
+              label="Not Enough Data to predict"
+            />
+          )}
+        </g>
         {drawWindows && (
           <>
             <FeatureEngineeringWindow2 />
