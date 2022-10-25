@@ -48,6 +48,16 @@ function App() {
       <h2 className="mt-5">Model Training</h2>
       <hr />
       <svg width={1000} height={1000}>
+        <rect
+          x={df1.marginLeft - 10}
+          y={df1.marginTop + (df1.cellSize + df1.cellGap) * forecastPt - 2}
+          width={df1.width + 50 + df2.width + 30}
+          height={cellSize + 4}
+          // strokeWidth={2}
+          fill="#FFBF00"
+          opacity={0.5}
+        />
+
         {df1.draw()}
 
         <rect

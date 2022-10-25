@@ -78,14 +78,14 @@ export const DraggableRect = ({
             x={x1 + offset} //TODO(dreed): figure out why its +1
             onChange={handleStartChange}
             min={0}
-            max={x2 - step}
+            max={x2}
             step={step}
             height={height}
           />
           <MovableHandle
             x={x2 + offset}
             onChange={handleStopChange}
-            min={x1 + offset}
+            min={x1}
             max={max + offset}
             step={step}
             height={height}
