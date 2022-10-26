@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { ThemeContext } from "./App";
 import { colorGenerator } from "./utils";
 
 type Cell = {
@@ -7,40 +9,55 @@ type Cell = {
 };
 
 export class Series {
-  values?: Cell[];
-  palette = "Greens";
-  constructor(values?: number[]) {
-    if (values) {
-      const gen = colorGenerator({
-        palette: this.palette,
-        nColors: values.length,
-      });
-      this.values = values.map((v, i) => ({
-        value: v,
-        color: gen(i),
-      }));
-    }
-  }
+  values: Cell[];
+  private palette = "Greens";
 
-  copy() {
-    if (!this.values) return new Series();
+  public nRows = 10;
+  public prefix = "";
+  public start = 0;
+  public name = "S";
+  public textColor = "#606F8C";
+  public borderColor = "#C8D2E6";
+  public fillColor = "white";
+  public formatter = (d: Cell) =>
+    isNaN(d.value) ? "--" : `${d.prefix}${d.value}`;
 
-    const s = new Series();
-    s.values = this.values.map((v) => ({ ...v }));
-    return s;
-  }
-
-  generate(nRows = 10, prefix = "", start = 0) {
+  constructor(data: Partial<Series>) {
+    Object.assign(this, data);
     const gen = colorGenerator({
       palette: this.palette,
-      nColors: nRows,
+      nColors: this.nRows,
     });
-    this.values = Array.from({ length: nRows }, (_, i) => ({
-      value: i + start,
-      prefix,
-      color: gen(i),
+    this.values = Array.from({ length: this.nRows }, (_, i) => ({
+      value: i + this.start,
+      prefix: this.prefix,
+      color: this.fillColor,
     }));
     return this;
+  }
+
+  copy(data: Partial<Series> = {}) {
+    const {
+      nRows,
+      prefix,
+      start,
+      name,
+      textColor,
+      borderColor,
+      fillColor,
+      formatter,
+    } = { ...this, ...data };
+
+    return new Series({
+      nRows,
+      prefix,
+      start,
+      name,
+      textColor,
+      borderColor,
+      fillColor,
+      formatter,
+    });
   }
 
   lag(n: number, trim = false) {
@@ -70,32 +87,38 @@ export class Series {
 
     return this;
   }
+}
 
-  draw({ cellSize = 10, x = 10, y = 10 }) {
-    if (!this.values) return null;
-    return (
-      <g>
-        {this.values.map(({ value, color, prefix }, i) => (
-          <g key={i}>
-            <rect
-              x={0}
-              y={i * (cellSize + 1)}
-              width={cellSize}
-              height={cellSize}
-              fill={color}
-            />
-            <text
-              x={cellSize / 2}
-              y={i * (cellSize + 1) + cellSize / 2}
-              fontSize={cellSize * 0.4}
-              textAnchor="middle"
-              alignmentBaseline="mathematical"
-            >
-              {isNaN(value) ? "--" : `${prefix}${value}`}
-            </text>
-          </g>
-        ))}
-      </g>
-    );
-  }
+export function SeriesRenderer({ series: s }: { series: Series }) {
+  const { cellSize, cellGap } = useContext(ThemeContext);
+
+  const { values } = s;
+  return (
+    <g>
+      {values.map(({ value, color, prefix }, i) => (
+        <g key={i}>
+          <rect
+            x={0}
+            y={i * (cellSize + cellGap)}
+            width={cellSize}
+            height={cellSize}
+            fill={color}
+            stroke={s.borderColor}
+            strokeWidth={0.5}
+          />
+          <text
+            x={cellSize / 2}
+            y={i * (cellSize + cellGap) + cellSize / 2}
+            fontSize={cellSize * 0.4}
+            textAnchor="middle"
+            alignmentBaseline="mathematical"
+            fill={s.textColor}
+            fontWeight={400}
+          >
+            {s.formatter({ value, color, prefix })}
+          </text>
+        </g>
+      ))}
+    </g>
+  );
 }
