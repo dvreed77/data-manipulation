@@ -13,7 +13,7 @@ export function ProblemDataDisplay({ problemConfig }: IProps) {
       stat: featureEngineeringEnd - featureEngineeringStart + 1,
     },
     { name: "Data Access Gap", stat: -featureEngineeringEnd },
-    { name: "Forecast Horizon", stat: forecastHorizon },
+    { name: "Forecast Distance", stat: forecastHorizon },
     { name: "Effective Gap", stat: forecastHorizon - featureEngineeringEnd },
   ];
   return (
