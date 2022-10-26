@@ -7,6 +7,8 @@ import { Data2 } from "./Data2";
 import { Bracket } from "./Bracket";
 import { Marker } from "./visUtils";
 import { ProblemDataDisplay2 } from "./ProblemDataDisplay2";
+import Hello from "./dave.mdx";
+import { Counter } from "./counter";
 
 export function useDataFrameDimensions(df: DataFrame) {
   const theme = useContext(ThemeContext);
@@ -31,9 +33,27 @@ const theme = {
   targetBorder: "#FF938E",
   feBorder: "#91C08C",
   fpBorder: "#FFD296",
+  value: "dave",
+  setValue: () => {},
 };
 
-export const ThemeContext = createContext(theme);
+interface ITheme {
+  cellGap: number;
+  cellSize: number;
+  gap1: number;
+  gap2: number;
+  marginTop: number;
+  marginLeft: number;
+  marginRight: number;
+  marginBottom: number;
+  targetBorder: string;
+  feBorder: string;
+  fpBorder: string;
+  value: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const ThemeContext = createContext<ITheme>(theme);
 
 function App() {
   const [problemConfig, setProblemConfig] = useState<ProblemConfig>({
@@ -61,9 +81,21 @@ function App() {
 
   const df1Dims = useDataFrameDimensions(df1);
   const df2Dims = useDataFrameDimensions(df2);
+
+  const [value, setValue] = useState("dave");
+
+  const newTheme = {
+    ...theme,
+    value,
+    setValue,
+  };
+
   return (
-    <ThemeContext.Provider value={theme}>
+    <ThemeContext.Provider value={newTheme}>
       <div className="mx-auto w-1/2">
+        <div>
+          <h1>Time Series Explainer</h1>
+        </div>
         <div className="sticky top-0 bg-white border-b py-2 justify-center">
           <div className="flex flex-row justify-center">
             <ProblemConfigComponent
@@ -287,6 +319,8 @@ function App() {
         <hr />
         <Data2 problemConfig={problemConfig} />
       </div>
+      <Counter />
+      <Hello />
     </ThemeContext.Provider>
   );
 }
