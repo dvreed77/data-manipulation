@@ -17,11 +17,31 @@ export class DataFrame {
 
     const { nCols, nRows, start } = this;
 
-    this.timeIndex = new Series({ nRows, prefix: "d_", start, name: "D" });
-    this.target = new Series({ nRows, prefix: "t_", start, name: "T" });
+    this.timeIndex = new Series({
+      nRows,
+      prefix: "d_",
+      start,
+      name: "D",
+      fillColor: "#EAEFF9",
+      borderColor: "#C8D2E6",
+    });
+    this.target = new Series({
+      nRows,
+      prefix: "t_",
+      start,
+      name: "T",
+      fillColor: "#DCE3F0",
+      borderColor: "#C8D2E6",
+    });
     this.columns = Array.from(
       { length: nCols },
-      (_, i) => new Series({ nRows, start, name: `f_${i}` })
+      (_, i) =>
+        new Series({
+          nRows,
+          start,
+          name: `f_${i}`,
+          fillColor: "#F5F8FC",
+        })
     );
     return this;
   }

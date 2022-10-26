@@ -17,7 +17,7 @@ function useDataFrameDimensions(df: DataFrame) {
 }
 
 const theme = {
-  cellGap: 1,
+  cellGap: 0,
   cellSize: 30,
   gap1: 10,
   gap2: 10,
@@ -26,6 +26,7 @@ const theme = {
   marginRight: 10,
   marginBottom: 10,
   targetBorder: "#94547F",
+  feBorder: "#E09E96",
 };
 
 export const ThemeContext = createContext(theme);
@@ -134,12 +135,12 @@ function App() {
               }
               width={df1Dims.dataWidth}
               height={
-                (theme.cellSize + 1) *
+                (theme.cellSize + theme.cellGap) *
                 (problemConfig.featureEngineeringEnd -
                   problemConfig.featureEngineeringStart +
                   1)
               }
-              stroke="#E09E96"
+              stroke={theme.feBorder}
               strokeWidth={2}
               fill="none"
             />
@@ -153,7 +154,7 @@ function App() {
               }
               y={
                 theme.marginTop +
-                (theme.cellSize + 1) *
+                (theme.cellSize + theme.cellGap) *
                   (forecastPt + problemConfig.forecastHorizon)
               }
               width={theme.cellSize}

@@ -16,6 +16,9 @@ export class Series {
   public prefix = "";
   public start = 0;
   public name = "S";
+  public textColor = "#606F8C";
+  public borderColor = "#C8D2E6";
+  public fillColor = "white";
 
   constructor(data: Partial<Series>) {
     Object.assign(this, data);
@@ -26,14 +29,23 @@ export class Series {
     this.values = Array.from({ length: this.nRows }, (_, i) => ({
       value: i + this.start,
       prefix: this.prefix,
-      color: gen(i),
+      color: this.fillColor,
     }));
     return this;
   }
 
   copy() {
-    const { nRows, prefix, start, name } = this;
-    return new Series({ nRows, prefix, start, name });
+    const { nRows, prefix, start, name, textColor, borderColor, fillColor } =
+      this;
+    return new Series({
+      nRows,
+      prefix,
+      start,
+      name,
+      textColor,
+      borderColor,
+      fillColor,
+    });
   }
 
   lag(n: number, trim = false) {
@@ -66,7 +78,7 @@ export class Series {
 }
 
 export function SeriesRenderer({ series: s }: { series: Series }) {
-  const { cellSize } = useContext(ThemeContext);
+  const { cellSize, cellGap } = useContext(ThemeContext);
 
   const { values } = s;
   return (
@@ -75,17 +87,21 @@ export function SeriesRenderer({ series: s }: { series: Series }) {
         <g key={i}>
           <rect
             x={0}
-            y={i * (cellSize + 1)}
+            y={i * (cellSize + cellGap)}
             width={cellSize}
             height={cellSize}
             fill={color}
+            stroke={s.borderColor}
+            strokeWidth={0.5}
           />
           <text
             x={cellSize / 2}
-            y={i * (cellSize + 1) + cellSize / 2}
+            y={i * (cellSize + cellGap) + cellSize / 2}
             fontSize={cellSize * 0.4}
             textAnchor="middle"
             alignmentBaseline="mathematical"
+            fill={s.textColor}
+            fontWeight={400}
           >
             {isNaN(value) ? "--" : `${prefix}${value}`}
           </text>
