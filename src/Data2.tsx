@@ -20,7 +20,12 @@ export const Data2 = ({ problemConfig, drawWindows = false }: IProps) => {
     marginTop,
   } = useContext(ThemeContext);
 
-  let df1 = new DataFrame({ nCols: 2, nRows: 10, start: 40 });
+  let df1 = new DataFrame({
+    nCols: 2,
+    nRows: 10,
+    start: 40,
+    name: "User Uploaded Data",
+  });
 
   let df2 = df1.copy({ name: "Transformed" }).transform({
     gap: -problemConfig.featureEngineeringEnd,
