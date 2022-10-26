@@ -200,19 +200,24 @@ function App() {
                       problemConfig.featureEngineeringEnd) *
                     theme.cellSize
                   }
-                  label="Can be used for Predictio"
+                  label="Can be used for Predict"
                 />
               </g>
 
               <rect
-                x={theme.marginLeft + theme.cellSize + theme.gap1}
+                x={
+                  theme.marginLeft +
+                  theme.cellSize +
+                  theme.gap1 +
+                  theme.cellSize
+                }
                 y={
                   theme.marginTop +
                   (theme.cellSize + theme.cellGap) * forecastPt
                 }
-                width={df2Dims.dataWidth}
+                width={df2Dims.dataWidth - theme.cellSize}
                 height={theme.cellSize}
-                stroke="#E09E96"
+                stroke={theme.feBorder}
                 strokeWidth={2}
                 fill="none"
               />
