@@ -2,13 +2,14 @@ import { useContext } from "react";
 import { ThemeContext } from "./App";
 import { Series, SeriesRenderer } from "./Series";
 
+const daysOfWeek = ["M", "T", "W", "Th", "F", "Sa", "Su"];
 export class DataFrame {
   columns: Series[];
   target: Series;
   timeIndex: Series;
 
   public name = "df";
-  public nCols = 3;
+  public nCols = 2;
   public nRows = 20;
   public start = 0;
 
@@ -52,12 +53,21 @@ export class DataFrame {
   }
 
   private transformData({ gap = 0, feWindow = 1, forecastHorizon = 0 }) {
-    const newColumns: Series[] = [];
+    const tFeature = this.timeIndex.copy({
+      formatter: (d) => daysOfWeek[d.value % 7],
+      name: "dow",
+    });
+    tFeature.values = tFeature.values.map((d) => ({
+      value: d.value,
+      prefix: d.prefix,
+      color: d.color,
+    }));
+
+    const newColumns: Series[] = [tFeature];
     this.columns.forEach((c) => {
       for (let i = 0; i < feWindow; i++) {
         const newColumnName = `${c.name} Lag(${i + gap})`;
 
-        console.log(c);
         const nc = c.copy().lag(i + gap, false);
         nc.name = newColumnName;
         newColumns.push(nc);
@@ -79,6 +89,8 @@ export class DataFrame {
         color: lastTime.color,
       });
     }
+
+    this.timeIndex.nRows = this.timeIndex.values.length;
 
     this.transformData({ gap, feWindow, forecastHorizon });
 
@@ -161,8 +173,8 @@ export function DataFrameRenderer({ dataframe: df }: { dataframe: DataFrame }) {
                 x={cellSize / 2}
                 y={0}
                 fontSize={cellSize * 0.4}
-                textAnchor="middle"
-                transform={`translate(${cellSize / 2},0) rotate(-45)`}
+                // textAnchor="start"
+                transform={`translate(4, 10) rotate(-45)`}
               >
                 {s.name}
               </text>

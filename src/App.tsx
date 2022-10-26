@@ -5,7 +5,7 @@ import { ProblemConfigComponent } from "./ProblemConfigComponent";
 import { ProblemDataDisplay } from "./ProblemDataDisplay";
 import { Data2 } from "./Data2";
 
-function useDataFrameDimensions(df: DataFrame) {
+export function useDataFrameDimensions(df: DataFrame) {
   const theme = useContext(ThemeContext);
 
   const dataWidth = theme.cellSize * df.nCols + theme.cellGap * (df.nCols - 1);
@@ -203,7 +203,7 @@ function App() {
 
         <h2 className="mt-5">Prediction</h2>
         <hr />
-        {/* <Data2 problemConfig={problemConfig} /> */}
+        <Data2 problemConfig={problemConfig} />
       </div>
     </ThemeContext.Provider>
   );

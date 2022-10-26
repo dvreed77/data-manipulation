@@ -19,6 +19,8 @@ export class Series {
   public textColor = "#606F8C";
   public borderColor = "#C8D2E6";
   public fillColor = "white";
+  public formatter = (d: Cell) =>
+    isNaN(d.value) ? "--" : `${d.prefix}${d.value}`;
 
   constructor(data: Partial<Series>) {
     Object.assign(this, data);
@@ -34,9 +36,18 @@ export class Series {
     return this;
   }
 
-  copy() {
-    const { nRows, prefix, start, name, textColor, borderColor, fillColor } =
-      this;
+  copy(data: Partial<Series> = {}) {
+    const {
+      nRows,
+      prefix,
+      start,
+      name,
+      textColor,
+      borderColor,
+      fillColor,
+      formatter,
+    } = { ...this, ...data };
+
     return new Series({
       nRows,
       prefix,
@@ -45,6 +56,7 @@ export class Series {
       textColor,
       borderColor,
       fillColor,
+      formatter,
     });
   }
 
@@ -103,7 +115,7 @@ export function SeriesRenderer({ series: s }: { series: Series }) {
             fill={s.textColor}
             fontWeight={400}
           >
-            {isNaN(value) ? "--" : `${prefix}${value}`}
+            {s.formatter({ value, color, prefix })}
           </text>
         </g>
       ))}
