@@ -27,8 +27,9 @@ const theme = {
   marginLeft: 10,
   marginRight: 10,
   marginBottom: 10,
-  targetBorder: "#94547F",
-  feBorder: "#E09E96",
+  targetBorder: "#FF938E",
+  feBorder: "#91C08C",
+  fpBorder: "#FFD296",
 };
 
 export const ThemeContext = createContext(theme);
@@ -80,13 +81,21 @@ function App() {
           <hr />
           <svg width={1000} height={1000}>
             <rect
-              x={theme.marginLeft - 10}
+              x={0}
               y={
                 theme.marginTop +
                 (theme.cellSize + theme.cellGap) * forecastPt +
                 2
               }
-              width={df1Dims.width + 50 + df2Dims.width + 30}
+              width={
+                theme.marginLeft +
+                df1Dims.width +
+                theme.marginRight +
+                +80 +
+                theme.marginLeft +
+                df2Dims.width +
+                theme.marginRight
+              }
               height={theme.cellSize - 4}
               fill="orange"
               opacity={0.5}
@@ -127,6 +136,18 @@ function App() {
             />
 
             <DataFrameRenderer dataframe={df1} />
+
+            <rect
+              x={theme.marginLeft}
+              y={
+                theme.marginTop + (theme.cellSize + theme.cellGap) * forecastPt
+              }
+              width={theme.cellSize}
+              height={theme.cellSize}
+              stroke={theme.fpBorder}
+              strokeWidth={2}
+              fill="none"
+            />
 
             <rect
               x={theme.marginLeft + theme.cellSize + theme.gap1}
@@ -205,6 +226,19 @@ function App() {
               </g>
 
               <rect
+                x={theme.marginLeft}
+                y={
+                  theme.marginTop +
+                  (theme.cellSize + theme.cellGap) * forecastPt
+                }
+                width={theme.cellSize}
+                height={theme.cellSize}
+                stroke={theme.fpBorder}
+                strokeWidth={2}
+                fill="none"
+              />
+
+              <rect
                 x={
                   theme.marginLeft +
                   theme.cellSize +
@@ -235,7 +269,7 @@ function App() {
                 }
                 width={theme.cellSize}
                 height={theme.cellSize}
-                stroke="#94547F"
+                stroke={theme.targetBorder}
                 strokeWidth={2}
                 fill="none"
               />
