@@ -1,6 +1,5 @@
 import * as d3 from "d3";
 import { DraggableRect } from "./DraggableRect";
-// import { MovableBar } from "./MovableBar";
 import { ProblemConfig } from "./types";
 
 interface IProps {

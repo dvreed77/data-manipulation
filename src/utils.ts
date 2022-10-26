@@ -20,3 +20,10 @@ export function colorGenerator({ palette = "BuGn", nColors = 10 }) {
     .range([0.05, 0.6]);
   return (idx: number) => d3.rgb(interpolate(scale(idx))).formatHex();
 }
+
+function ensure<T>(value: T | undefined | null): T {
+  if (value === undefined || value === null) {
+    throw new Error("Value is undefined");
+  }
+  return value;
+}
