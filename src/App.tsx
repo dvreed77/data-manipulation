@@ -4,6 +4,8 @@ import { ProblemConfig } from "./types";
 import { ProblemConfigComponent } from "./ProblemConfigComponent";
 import { ProblemDataDisplay } from "./ProblemDataDisplay";
 import { Data2 } from "./Data2";
+import { Bracket } from "./Bracket";
+import { Marker } from "./visUtils";
 
 export function useDataFrameDimensions(df: DataFrame) {
   const theme = useContext(ThemeContext);
@@ -21,7 +23,7 @@ const theme = {
   cellSize: 30,
   gap1: 10,
   gap2: 10,
-  marginTop: 80,
+  marginTop: 100,
   marginLeft: 10,
   marginRight: 10,
   marginBottom: 10,
@@ -33,8 +35,8 @@ export const ThemeContext = createContext(theme);
 
 function App() {
   const [problemConfig, setProblemConfig] = useState<ProblemConfig>({
-    featureEngineeringStart: -4,
-    featureEngineeringEnd: -3,
+    featureEngineeringStart: -5,
+    featureEngineeringEnd: -5,
     forecastHorizon: 3,
   });
 
@@ -71,8 +73,8 @@ function App() {
             onChange={handleProblemChange}
           />
         </div>
-        <div className="bg-white">
-          <h2>Model Training</h2>
+        <div className="bg-white py-3">
+          <h2 className="font-semibold text-2xl">Model Training</h2>
         </div>
         <div>
           <hr />
@@ -166,6 +168,41 @@ function App() {
 
             <g transform={`translate(${df1Dims.width + 100}, 0)`}>
               <DataFrameRenderer dataframe={df2} />
+              {/* <Marker /> */}
+              <g
+                transform={`translate(${
+                  df2Dims.width + theme.marginLeft + theme.marginRight
+                }, ${theme.marginTop})`}
+              >
+                {/* <Marker /> */}
+
+                <Bracket
+                  y={-problemConfig.featureEngineeringStart * theme.cellSize}
+                  width={10}
+                  height={
+                    (df1.nRows -
+                      -problemConfig.featureEngineeringStart -
+                      problemConfig.forecastHorizon) *
+                    theme.cellSize
+                  }
+                  label="Can be used for Training"
+                />
+                <Bracket
+                  y={
+                    (df2.nRows2 -
+                      (problemConfig.forecastHorizon -
+                        problemConfig.featureEngineeringEnd)) *
+                    theme.cellSize
+                  }
+                  width={10}
+                  height={
+                    (problemConfig.forecastHorizon -
+                      problemConfig.featureEngineeringEnd) *
+                    theme.cellSize
+                  }
+                  label="Can be used for Predictio"
+                />
+              </g>
 
               <rect
                 x={theme.marginLeft + theme.cellSize + theme.gap1}

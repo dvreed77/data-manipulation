@@ -139,7 +139,7 @@ export const Data2 = ({ problemConfig, drawWindows = false }: IProps) => {
       </>
     )} */}
 
-      <g transform={`translate(${df1Dims.width + 50}, 0)`}>
+      <g transform={`translate(${df1Dims.width + 100}, 0)`}>
         <DataFrameRenderer dataframe={df2} />
         <g
           transform={`translate(${df2Dims.width + 20}, ${

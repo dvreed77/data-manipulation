@@ -6,6 +6,7 @@ type Cell = {
   value: number;
   color: string;
   prefix?: string;
+  textColor: string;
 };
 
 export class Series {
@@ -32,6 +33,7 @@ export class Series {
       value: i + this.start,
       prefix: this.prefix,
       color: this.fillColor,
+      textColor: this.textColor,
     }));
     return this;
   }
@@ -67,7 +69,11 @@ export class Series {
 
     if (n > 0) {
       for (let i = 0; i < n; i++) {
-        this.values.unshift({ value: NaN, color: "white" });
+        this.values.unshift({
+          value: NaN,
+          color: "white",
+          textColor: this.textColor,
+        });
       }
 
       if (trim) {
@@ -77,7 +83,11 @@ export class Series {
 
     if (n < 0) {
       for (let i = 0; i < -n; i++) {
-        this.values.push({ value: NaN, color: "white" });
+        this.values.push({
+          value: NaN,
+          color: "white",
+          textColor: this.textColor,
+        });
       }
 
       if (trim) {
@@ -95,7 +105,7 @@ export function SeriesRenderer({ series: s }: { series: Series }) {
   const { values } = s;
   return (
     <g>
-      {values.map(({ value, color, prefix }, i) => (
+      {values.map(({ value, color, prefix, textColor }, i) => (
         <g key={i}>
           <rect
             x={0}
@@ -112,10 +122,10 @@ export function SeriesRenderer({ series: s }: { series: Series }) {
             fontSize={cellSize * 0.4}
             textAnchor="middle"
             alignmentBaseline="mathematical"
-            fill={s.textColor}
+            fill={textColor}
             fontWeight={400}
           >
-            {s.formatter({ value, color, prefix })}
+            {s.formatter({ value, color, prefix, textColor })}
           </text>
         </g>
       ))}

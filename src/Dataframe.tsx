@@ -61,6 +61,7 @@ export class DataFrame {
       value: d.value,
       prefix: d.prefix,
       color: d.color,
+      textColor: d.textColor,
     }));
 
     const newColumns: Series[] = [tFeature];
@@ -87,6 +88,7 @@ export class DataFrame {
         prefix: lastTime.prefix,
         value: lastTime.value + i + 1,
         color: lastTime.color,
+        textColor: lastTime.textColor,
       });
     }
 
@@ -102,10 +104,15 @@ export class DataFrame {
       this.target.values[lastGoodIdx + i] = {
         prefix: lastTarget.prefix,
         value: lastTarget.value + i,
-        color: "red",
+        color: "#8698BA",
+        textColor: "#DCE3F0",
       };
     }
     return this;
+  }
+
+  get nRows2() {
+    return this.target.values.length;
   }
 
   draw() {
@@ -173,7 +180,6 @@ export function DataFrameRenderer({ dataframe: df }: { dataframe: DataFrame }) {
                 x={cellSize / 2}
                 y={0}
                 fontSize={cellSize * 0.4}
-                // textAnchor="start"
                 transform={`translate(4, 10) rotate(-45)`}
               >
                 {s.name}
@@ -188,7 +194,7 @@ export function DataFrameRenderer({ dataframe: df }: { dataframe: DataFrame }) {
             fontSize={cellSize * 0.4}
             textAnchor="middle"
           >
-            T
+            {df.target.name}
           </text>
         </g>
       </g>
