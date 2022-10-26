@@ -16,7 +16,7 @@ export const ProblemConfigComponent = ({
   onChange,
 }: IProps) => {
   const svgWidth = 500;
-  const svgHeight = 100;
+  const svgHeight = 80;
   const padding = 10;
 
   const canvasWidth = svgWidth - 2 * padding;

@@ -6,6 +6,7 @@ import { ProblemDataDisplay } from "./ProblemDataDisplay";
 import { Data2 } from "./Data2";
 import { Bracket } from "./Bracket";
 import { Marker } from "./visUtils";
+import { ProblemDataDisplay2 } from "./ProblemDataDisplay2";
 
 export function useDataFrameDimensions(df: DataFrame) {
   const theme = useContext(ThemeContext);
@@ -63,16 +64,19 @@ function App() {
   return (
     <ThemeContext.Provider value={theme}>
       <div className="mx-auto w-1/2">
-        <div className="sticky top-0 bg-white border-b py-2">
-          <div className="mb-3">
+        <div className="sticky top-0 bg-white border-b py-2 justify-center">
+          <div className="flex flex-row justify-center">
+            <ProblemConfigComponent
+              problemConfig={problemConfig}
+              featureEngineeringMax={10}
+              forecastHorizonMax={10}
+              onChange={handleProblemChange}
+            />
+            {/* <ProblemDataDisplay2 problemConfig={problemConfig} /> */}
+          </div>
+          <div className="mb-3 justify-center">
             <ProblemDataDisplay problemConfig={problemConfig} />
           </div>
-          <ProblemConfigComponent
-            problemConfig={problemConfig}
-            featureEngineeringMax={10}
-            forecastHorizonMax={10}
-            onChange={handleProblemChange}
-          />
         </div>
         <div className="bg-white py-3">
           <h2 className="font-semibold text-2xl">Model Training</h2>
@@ -277,7 +281,9 @@ function App() {
           </svg>
         </div>
 
-        <h2 className="mt-5">Prediction</h2>
+        <div className="bg-white py-3">
+          <h2 className="font-semibold text-2xl">Prediction</h2>
+        </div>
         <hr />
         <Data2 problemConfig={problemConfig} />
       </div>

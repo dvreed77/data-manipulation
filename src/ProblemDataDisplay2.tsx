@@ -4,7 +4,7 @@ interface IProps {
   problemConfig: ProblemConfig;
 }
 
-export function ProblemDataDisplay({ problemConfig }: IProps) {
+export function ProblemDataDisplay2({ problemConfig }: IProps) {
   const { featureEngineeringStart, featureEngineeringEnd, forecastHorizon } =
     problemConfig;
   const stats = [
@@ -18,16 +18,16 @@ export function ProblemDataDisplay({ problemConfig }: IProps) {
   ];
   return (
     <div>
-      <dl className="flex flex-row justify-center">
+      <dl className="flex flex-col">
         {stats.map((item) => (
           <div
             key={item.name}
-            className="overflow-hidden rounded-lg bg-white px-2 py-1 shadow mx-1"
+            className="overflow-hidden bg-white px-2 py-1 mx-1"
           >
             <dt className="truncate text-xs font-medium text-gray-400">
               {item.name}
             </dt>
-            <dd className="mt-1 text-xl font-semibold tracking-tight text-gray-900">
+            <dd className="mt-1 text-lg font-semibold tracking-tight text-gray-900">
               {item.stat}
             </dd>
           </div>
