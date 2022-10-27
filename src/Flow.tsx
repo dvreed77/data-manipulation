@@ -1,17 +1,32 @@
 import { Routes, Route, Link, Outlet, useLocation } from "react-router-dom";
 
-export const A = () => {
-  return <div>A</div>;
+export const Upload = () => {
+  return <div>Upload</div>;
 };
-export const B = () => {
-  return <div>B</div>;
+export const Configure = () => {
+  return <div>Configure</div>;
 };
-export const C = () => {
-  return <div>C</div>;
+export const Train = () => {
+  return <div>Train</div>;
 };
-export const D = () => {
-  return <div>D</div>;
+export const Results = () => {
+  return <div>Results</div>;
 };
+export const Upload2 = () => {
+  return <div>Upload New</div>;
+};
+export const Forecast = () => {
+  return <div>Forecast</div>;
+};
+
+const steps = [
+  { name: "Upload", path: "upload", component: <Upload /> },
+  { name: "Configure", path: "configure", component: <Configure /> },
+  { name: "Train", path: "train", component: <Train /> },
+  { name: "Results", path: "results", component: <Results /> },
+  { name: "Upload New", path: "upload2", component: <Upload2 /> },
+  { name: "Forecast", path: "forecast", component: <Forecast /> },
+];
 
 function Layout() {
   return (
@@ -23,12 +38,11 @@ function Layout() {
           <li>
             <Link to={""}>Home</Link>
           </li>
-          <li>
-            <Link to={`B`}>B</Link>
-          </li>
-          <li>
-            <Link to={`C`}>C</Link>
-          </li>
+          {steps.map((step) => (
+            <li>
+              <Link to={step.path}>{step.name}</Link>
+            </li>
+          ))}
         </ul>
       </nav>
 
@@ -46,8 +60,9 @@ export const Flow = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route path="B" element={<B />} />
-        <Route path="C" element={<C />} />
+        {steps.map((step) => (
+          <Route key={step.path} path={step.path} element={step.component} />
+        ))}
       </Route>
     </Routes>
   );
