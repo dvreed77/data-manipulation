@@ -319,8 +319,10 @@ function App() {
         <hr />
         <Data2 problemConfig={problemConfig} />
       </div>
-      <Counter />
-      <Hello />
+
+      <article className="prose lg:prose-xl mx-auto">
+        <Hello />
+      </article>
     </ThemeContext.Provider>
   );
 }
