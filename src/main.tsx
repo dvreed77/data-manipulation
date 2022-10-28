@@ -9,7 +9,7 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
-import { Flow } from "./Flow";
+import { Flow } from "./simulation/Flow";
 
 const router = createBrowserRouter(
   [
