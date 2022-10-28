@@ -6,6 +6,7 @@ interface IProps {
   featureEngineeringMax: number;
   problemConfig: ProblemConfig;
   forecastHorizonMax: number;
+  showIntervals?: boolean;
   onChange: (_: ProblemConfig) => void;
 }
 
@@ -14,6 +15,7 @@ export const ProblemConfigComponent = ({
   forecastHorizonMax,
   problemConfig,
   onChange,
+  showIntervals = true,
 }: IProps) => {
   const svgWidth = 500;
   const svgHeight = 80;
@@ -75,15 +77,17 @@ export const ProblemConfigComponent = ({
                   stroke="#ddd"
                   strokeWidth={1}
                 />
-                <text
-                  x={i * step + step / 2}
-                  y={canvasHeight / 2}
-                  textAnchor="middle"
-                  alignmentBaseline="mathematical"
-                  fill="#aaa"
-                >
-                  {i - 10}
-                </text>
+                {showIntervals && (
+                  <text
+                    x={i * step + step / 2}
+                    y={canvasHeight / 2}
+                    textAnchor="middle"
+                    alignmentBaseline="mathematical"
+                    fill="#aaa"
+                  >
+                    {i - 10}
+                  </text>
+                )}
               </g>
             );
           })}

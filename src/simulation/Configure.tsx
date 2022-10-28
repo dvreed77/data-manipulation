@@ -85,17 +85,21 @@ export const Configure = () => {
   };
   return (
     <div>
-      <ProblemConfigComponent
-        featureEngineeringMax={20}
-        forecastHorizonMax={20}
-        problemConfig={state.problemConfig}
-        onChange={(d) => {
-          dispatch({ type: ActionType.UPDATE_PROBLEM_CONFIG, payload: d });
-        }}
-      />
-
       <div>
         <VegaLite spec={spec} data={{ lineData: data, barData }} />
+      </div>
+      <div className="flex">
+        <div className="mb-3 justify-center">
+          <ProblemConfigComponent
+            featureEngineeringMax={20}
+            forecastHorizonMax={20}
+            problemConfig={state.problemConfig}
+            onChange={(d) => {
+              dispatch({ type: ActionType.UPDATE_PROBLEM_CONFIG, payload: d });
+            }}
+            showIntervals={false}
+          />
+        </div>
       </div>
     </div>
   );
