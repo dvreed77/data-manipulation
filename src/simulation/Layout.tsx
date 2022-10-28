@@ -26,21 +26,25 @@ export function Layout() {
         <nav className="w-2/12 my-2">
           <ul className="grid gap-1 grid-cols-1">
             {steps.map((step) => (
-              <li className="rounded border" key={step.name}>
-                <NavLink
-                  to={step.path}
-                  className={({ isActive }) =>
-                    isActive ? "bg-ayx-primary text-white" : "bg-inherit"
-                  }
-                >
-                  <div className="p-3 bg-inherit">{step.name}</div>
-                </NavLink>
-              </li>
+              <NavLink key={step.path} to={step.path}>
+                {({ isActive }) => (
+                  <li
+                    className={`rounded border overflow-hidden ${
+                      isActive && "bg-ayx-primary text-white"
+                    }`}
+                    key={step.name}
+                  >
+                    <div className="p-3 bg-inherit">{step.name}</div>
+                  </li>
+                )}
+              </NavLink>
             ))}
           </ul>
         </nav>
         <div className="w-10/12">
-          <Outlet />
+          <div className="m-4">
+            <Outlet />
+          </div>
         </div>
       </div>
     </div>
