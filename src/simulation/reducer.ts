@@ -7,6 +7,7 @@ export const initialState = {
     forecastHorizon: 4,
   },
   today: new Date(),
+  selectedRow: null,
 };
 
 export enum ActionType {
@@ -15,6 +16,7 @@ export enum ActionType {
   UPDATE_FD,
   UPDATE_PROBLEM_CONFIG,
   UPDATE_TODAY,
+  SET_SELECTED_ROW,
 }
 
 type Action = {
@@ -57,6 +59,11 @@ export const reducer = (state: any, action: Action) => {
       return {
         ...state,
         today: action.payload,
+      };
+    case ActionType.SET_SELECTED_ROW:
+      return {
+        ...state,
+        selectedRow: action.payload,
       };
     default:
       return state;

@@ -40,8 +40,6 @@ export const Configure = () => {
   const spec = {
     width: 1000,
     height: 200,
-    // axisX: false,
-    // axisY: false,
     layer: [
       {
         data: { name: "lineData" },
@@ -49,7 +47,6 @@ export const Configure = () => {
         mark: "line",
         encoding: {
           x: { field: "date", type: "temporal" },
-          // x: { field: "key", type: "quantitative" },
           y: { field: "sales", type: "quantitative" },
         },
         axisX: false,
@@ -65,12 +62,6 @@ export const Configure = () => {
           size: { value: 4 },
         },
       },
-      //   {
-      //     mark: "rule",
-      //     encoding: {
-      //       y: { aggregate: "max", field: "sales" },
-      //     },
-      //   },
       {
         mark: "rect",
         data: { name: "barData" },
@@ -83,6 +74,7 @@ export const Configure = () => {
       },
     ],
   };
+
   return (
     <div>
       <div>
