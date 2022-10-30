@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Data2 } from "../Data2";
 import { ProblemConfigComponent } from "../ProblemConfigComponent";
 import { ActionType, AppContext } from "./reducer";
@@ -6,7 +6,7 @@ import { Table } from "./Table";
 import { Table2 } from "./Table2";
 import { Table3 } from "./Table3";
 import { Row } from "./types";
-import { generateData } from "./Upload";
+import { generateData } from "./utils";
 
 export type Row2 = {
   key: number;
@@ -47,9 +47,23 @@ export const Train = () => {
     state.problemConfig.forecastHorizon -
     state.problemConfig.featureEngineeringStart;
 
+  useEffect(() => {
+    dispatch({
+      type: ActionType.SET_SELECTED_ROW,
+      payload: undefined,
+    });
+  }, []);
+
   const transformedData = transformData(data, lag1, lag2);
   return (
     <div>
+      <div className="text-sm text-blue-800">
+        <p>
+          Based on the problem configuration, the users upload data is
+          transformed by lagging the target column for each value in the feature
+          engineering window.
+        </p>
+      </div>
       <ProblemConfigComponent
         featureEngineeringMax={20}
         forecastHorizonMax={20}
