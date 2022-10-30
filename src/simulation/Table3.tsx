@@ -1,28 +1,23 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ActionType, AppContext } from "./reducer";
+import { Row2 } from "./Train";
 import { Row } from "./types";
 
-const TableRows = ({ data }: { data: Row[] }) => {
+const TableRows = ({ data }: { data: Row2[] }) => {
   const { state, dispatch } = useContext(AppContext);
 
   function handleClick(row: any) {
-    const effectiveGap =
-      state.problemConfig.forecastHorizon -
-      state.problemConfig.featureEngineeringEnd;
+    dispatch({ type: ActionType.SET_SELECTED_ROW, payload: row.key });
+  }
 
-    const myRow = row.key - effectiveGap;
-    console.log(myRow);
-
-    const element = document.getElementById(`row-${myRow}`);
+  useEffect(() => {
+    const element = document.getElementById(`row2-${state.selectedRow}`);
 
     element?.scrollIntoView({
       behavior: "smooth",
-      block: "center",
-      inline: "nearest",
+      block: "end",
     });
-
-    dispatch({ type: ActionType.SET_SELECTED_ROW, payload: row.key });
-  }
+  }, [state.selectedRow]);
   return (
     <>
       {data.map((row) => (
@@ -33,14 +28,23 @@ const TableRows = ({ data }: { data: Row[] }) => {
             state.selectedRow === row.key ? "bg-red-200 text-red-900" : ""
           }`}
         >
-          <td className="whitespace-nowrap py-1 pl-4 pr-3 text-sm font-medium text-inherit sm:pl-6">
+          <td
+            id={`row2-${row.key}`}
+            className="whitespace-nowrap py-1 pl-4 pr-3 text-sm font-medium text-inherit sm:pl-6"
+          >
             {row.key}
           </td>
           <td className="whitespace-nowrap px-3 py-1 text-sm text-inherit">
             {row.date.toLocaleDateString()}
           </td>
           <td className="whitespace-nowrap px-3 py-1 text-sm text-inherit">
-            {row.f_1}
+            {isNaN(row.lag1) ? "--" : row.lag1}
+          </td>
+          <td className="whitespace-nowrap px-3 py-1 text-sm text-inherit">
+            ...
+          </td>
+          <td className="whitespace-nowrap px-3 py-1 text-sm text-inherit">
+            {isNaN(row.lag2) ? "--" : row.lag2}
           </td>
           <td className="whitespace-nowrap px-3 py-1 text-sm text-inherit">
             {row.sales}
@@ -51,7 +55,21 @@ const TableRows = ({ data }: { data: Row[] }) => {
   );
 };
 
-export const Table3 = ({ data }: { data: Row[] }) => {
+export const Table3 = ({ data }: { data: Row2[] }) => {
+  const { state, dispatch } = useContext(AppContext);
+
+  const effectiveGap =
+    state.problemConfig.forecastHorizon -
+    state.problemConfig.featureEngineeringEnd;
+
+  const lag1 =
+    state.problemConfig.forecastHorizon -
+    state.problemConfig.featureEngineeringEnd;
+
+  const lag2 =
+    state.problemConfig.forecastHorizon -
+    state.problemConfig.featureEngineeringStart;
+
   return (
     <div className="overflow-x-auto max-h-96">
       <table className="min-w-full divide-y divide-gray-300 max-h-96">
@@ -73,7 +91,19 @@ export const Table3 = ({ data }: { data: Row[] }) => {
               scope="col"
               className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
             >
-              Feature 1
+              Sales Lag {lag1}
+            </th>
+            <th
+              scope="col"
+              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+            >
+              ...
+            </th>
+            <th
+              scope="col"
+              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+            >
+              Sales Lag {lag2}
             </th>
             <th
               scope="col"
