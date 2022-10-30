@@ -9,52 +9,106 @@ interface ITransformProps {
   lag1: number;
   lag2: number;
 }
+
+type TransformedRow = {
+  key: number;
+  keyLabel?: string;
+  date: string;
+  sales: string;
+  class?: string;
+};
 function transformData({ data, selectedRow, lag1, lag2 }: ITransformProps) {
+  const data2: TransformedRow[] = data.map((d) => ({
+    ...d,
+    date: d.date.toLocaleDateString(),
+    sales: d.sales.toString(),
+    selected: d.key === selectedRow,
+  }));
   if (selectedRow === undefined || selectedRow === null) {
     console.log("selectedRow is undefined");
-    return data.map((d) => ({
-      ...d,
-      date: d.date.toLocaleDateString(),
-      selected: false,
-    }));
+    return data2;
   }
-  const idx1 = selectedRow - lag2;
-  const idx2 = selectedRow - lag1;
+  const feStartIdx = selectedRow - lag2;
+  const feEndIdx = selectedRow - lag1;
 
-  const grp1 = data.slice(0, idx1);
-  const gap1 = [
-    { ...data[idx1], class: "bg-green-500 border-t border-green-700" },
-    {
-      key: `${idx1 + 1}-${idx2 - 1}`,
-      date: undefined,
-      sales: "...",
-      class: "bg-green-500",
-    },
-    { ...data[idx2], class: "bg-green-500 border-b border-green-700" },
-    { ...data[idx2 + 1], class: "" },
-    {
-      key: `${idx2 + 2}-${selectedRow - 2}`,
-      date: undefined,
-      sales: "...",
-      class: "",
-    },
-    { ...data[selectedRow - 1], class: "" },
-    { ...data[selectedRow], class: "bg-red-500 border-y border-red-800" },
-  ];
-  const grp2 = data.slice(selectedRow + 1);
+  const newData: TransformedRow[] = [...data2.slice(0, feStartIdx)];
 
-  const transformedData = [...grp1, ...gap1, ...grp2];
-
-  const d = transformedData.map((d) => {
-    return {
-      ...d,
-      date: d.date ? d.date.toLocaleDateString() : "...",
-      selected: d.key === selectedRow,
-      class: (d as any).class ?? "",
-    };
+  newData.push({
+    ...data2[feStartIdx],
+    class: "bg-green-500 border-t border-green-700",
   });
 
-  return d;
+  if (feEndIdx - feStartIdx > 1) {
+    newData.push({
+      key: feStartIdx + 1,
+      keyLabel: `${feStartIdx + 1}-${feEndIdx - 1}`,
+      date: "...",
+      sales: "...",
+      class: "bg-green-500",
+    });
+  }
+
+  if (feEndIdx - feStartIdx > 0) {
+    newData.push({
+      ...data2[feEndIdx],
+      class: "bg-green-500 border-b border-green-700",
+    });
+  }
+
+  if (selectedRow - feEndIdx > 1) {
+    newData.push({ ...data2[feEndIdx + 1] });
+  }
+
+  if (selectedRow - feEndIdx === 4) {
+    newData.push({ ...data2[feEndIdx + 2] });
+  }
+
+  if (selectedRow - feEndIdx > 4) {
+    newData.push({
+      key: feEndIdx + 2,
+      keyLabel: `...`,
+      date: "...",
+      sales: "...",
+      class: "",
+    });
+  }
+
+  if (selectedRow - feEndIdx > 2) {
+    newData.push({ ...data2[selectedRow - 1] });
+  }
+
+  newData.push({
+    ...data2[selectedRow],
+    class: "bg-red-500 border-y border-red-800",
+  });
+
+  newData.push(...data2.slice(selectedRow + 1));
+
+  // const grp1 = data.slice(0, idx1);
+  // const gap1 = [
+  //   { ...data[feStartIdx], class: "bg-green-500 border-t border-green-700" },
+  //   {
+  //     key: `${feStartIdx + 1}-${feEndIdx - 1}`,
+  //     date: undefined,
+  //     sales: "...",
+  //     class: "bg-green-500",
+  //   },
+  //   { ...data[idx2], class: "bg-green-500 border-b border-green-700" },
+  //   { ...data[idx2 + 1], class: "" },
+  //   {
+  //     key: `${idx2 + 2}-${selectedRow - 2}`,
+  //     date: undefined,
+  //     sales: "...",
+  //     class: "",
+  //   },
+  //   { ...data[selectedRow - 1], class: "" },
+  //   { ...data[selectedRow], class: "bg-red-500 border-y border-red-800" },
+  // ];
+  // const grp2 = data.slice(selectedRow + 1);
+
+  // const transformedData = [...grp1, ...gap1, ...grp2];
+
+  return newData;
 }
 const TableRows = ({ data }: { data: Row[] }) => {
   const { state, dispatch } = useContext(AppContext);
@@ -64,10 +118,6 @@ const TableRows = ({ data }: { data: Row[] }) => {
   );
 
   useEffect(() => {
-    // const effectiveGap =
-    //   state.problemConfig.forecastHorizon -
-    //   state.problemConfig.featureEngineeringEnd;
-
     const lag1 =
       state.problemConfig.forecastHorizon -
       state.problemConfig.featureEngineeringEnd;
@@ -84,13 +134,13 @@ const TableRows = ({ data }: { data: Row[] }) => {
 
     element?.scrollIntoView({
       behavior: "smooth",
-      block: "end",
+      block: "center",
     });
 
+    console.log("element1", element);
     console.log("scrolling to row", state.selectedRow);
   }, [state.selectedRow, state.problemConfig]);
 
-  console.log("render");
   return (
     <>
       {transformedData.map((row) => (
@@ -101,7 +151,7 @@ const TableRows = ({ data }: { data: Row[] }) => {
               (row as any).class
             }`}
           >
-            {row.key}
+            {row.keyLabel || row.key}
           </td>
           <td
             className={`whitespace-nowrap py-1 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 ${

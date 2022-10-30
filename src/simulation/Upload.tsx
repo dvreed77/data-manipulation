@@ -1,38 +1,7 @@
 import { Chart } from "./Chart";
 import { Table } from "./Table";
 import { Row } from "./types";
-
-export function generateData(): Row[] {
-  const nDays = 2000;
-  const today = new Date();
-  const day = 60 * 60 * 24 * 1000;
-  const gap = 30;
-  const startDate = new Date(today.getTime() - day * (nDays + gap));
-  const data = [];
-  for (let i = 0; i < 2000; i++) {
-    const weekly = Math.cos(i / 7);
-    const monthly = Math.cos(i / 30);
-    const yearly = Math.cos(i / 365);
-    const seasonal = Math.cos(i / 90);
-    data.push({
-      key: i,
-      date: new Date(startDate.getTime() + i * day),
-      f_1: i,
-      sales: 0.2 * weekly + 0.4 * monthly + yearly + seasonal,
-    });
-  }
-
-  const minValue = Math.min(...data.map((d) => d.sales));
-  const maxValue = Math.max(...data.map((d) => d.sales));
-
-  const normalize = data.map((d) => ({
-    ...d,
-    sales: Math.round(
-      ((d.sales - minValue) / (maxValue - minValue)) * 1000 + 100
-    ),
-  }));
-  return normalize;
-}
+import { generateData } from "./utils";
 
 export const Upload = () => {
   const onClick = () => {

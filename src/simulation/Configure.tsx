@@ -2,39 +2,28 @@ import { useContext } from "react";
 import { ProblemConfigComponent } from "../ProblemConfigComponent";
 import { ActionType, AppContext } from "./reducer";
 import { VegaLite, VisualizationSpec } from "react-vega";
-import { generateData } from "./Upload";
+import { ProblemDataDisplay } from "../ProblemDataDisplay";
+import { generateData } from "./utils";
 
 export const Configure = () => {
   const { state, dispatch } = useContext(AppContext);
-  const data = generateData();
-
-  const spec2: VisualizationSpec = {
-    // $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    // description: "Google's stock price over time.",
-    //   data: { url: "data/stocks.csv" },
-    data: { name: "table" },
-    //   transform: [{ filter: "datum.symbol==='GOOG'" }],
-    mark: "line",
-    width: 1000,
-    height: 200,
-    encoding: {
-      x: { field: "date", type: "temporal" },
-      // x: { field: "key", type: "quantitative" },
-      y: { field: "sales", type: "quantitative" },
-    },
-  };
 
   const feWindowWidth =
     state.problemConfig.featureEngineeringEnd -
-    state.problemConfig.featureEngineeringStart;
-
+    state.problemConfig.featureEngineeringStart +
+    1;
   const effectiveGap =
     state.problemConfig.forecastHorizon -
     state.problemConfig.featureEngineeringEnd;
+
+  const data = generateData(effectiveGap);
+
   const barData = {
     feStart: data[30].date,
-    feEnd: data[30 + 20 * feWindowWidth].date,
-    fd: data[30 + 20 * (feWindowWidth + effectiveGap)].date,
+    feEnd: data[30 + 1 * feWindowWidth].date,
+    fd: data[30 + 1 * (feWindowWidth + effectiveGap)].date,
+    end1: data[100 - 1].date,
+    end2: data[data.length - 1].date,
   };
 
   const spec = {
@@ -72,11 +61,32 @@ export const Configure = () => {
           color: { value: "green" },
         },
       },
+      {
+        mark: "rect",
+        data: { name: "barData" },
+        encoding: {
+          x: { field: "end1", type: "temporal" },
+          x2: { field: "end2", type: "temporal" },
+          opacity: { value: 0.5 },
+          color: { value: "#ccc" },
+        },
+      },
     ],
   };
 
   return (
     <div>
+      <div className="flex">
+        <div className="ml-3">
+          <div className="text-sm text-blue-800">
+            <p>
+              User uploaded 2000 rows of data that starts on{" "}
+              <b>{data[0].date.toLocaleDateString()}</b> and ends on{" "}
+              <b>{data[data.length - 1].date.toLocaleDateString()}</b>.
+            </p>
+          </div>
+        </div>
+      </div>
       <div>
         <VegaLite spec={spec} data={{ lineData: data, barData }} />
       </div>
@@ -91,6 +101,7 @@ export const Configure = () => {
             }}
             showIntervals={false}
           />
+          <ProblemDataDisplay problemConfig={state.problemConfig} />
         </div>
       </div>
     </div>

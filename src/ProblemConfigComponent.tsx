@@ -38,18 +38,31 @@ export const ProblemConfigComponent = ({
   const forecastPoint = xScale(0);
 
   const handleHorizonChange = (v: number) => {
-    onChange({
-      ...problemConfig,
-      forecastHorizon: Math.round(xScale.invert(v)),
-    });
+    const prev = problemConfig.forecastHorizon;
+    const next = Math.round(xScale.invert(v));
+
+    if (next !== prev) {
+      onChange({
+        ...problemConfig,
+        forecastHorizon: Math.round(xScale.invert(v)),
+      });
+    }
   };
 
   const handleDragChange = (a: number, b: number) => {
-    onChange({
-      ...problemConfig,
-      featureEngineeringStart: Math.round(xScale.invert(a)) + 1,
-      featureEngineeringEnd: Math.round(xScale.invert(b)),
-    });
+    const prevA = problemConfig.featureEngineeringStart;
+    const nextA = Math.round(xScale.invert(a)) + 1;
+
+    const prevB = problemConfig.featureEngineeringEnd;
+    const nextB = Math.round(xScale.invert(b));
+
+    if (nextA !== prevA || nextB !== prevB) {
+      onChange({
+        ...problemConfig,
+        featureEngineeringStart: nextA,
+        featureEngineeringEnd: nextB,
+      });
+    }
   };
 
   return (

@@ -10,14 +10,16 @@ const TableRows = ({ data }: { data: Row2[] }) => {
     dispatch({ type: ActionType.SET_SELECTED_ROW, payload: row.key });
   }
 
-  useEffect(() => {
-    const element = document.getElementById(`row2-${state.selectedRow}`);
+  const lag1 =
+    state.problemConfig.forecastHorizon -
+    state.problemConfig.featureEngineeringEnd;
 
-    element?.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
-    });
-  }, [state.selectedRow]);
+  const lag2 =
+    state.problemConfig.forecastHorizon -
+    state.problemConfig.featureEngineeringStart;
+
+  const d = lag2 - lag1;
+
   return (
     <>
       {data.map((row) => (
@@ -40,12 +42,18 @@ const TableRows = ({ data }: { data: Row2[] }) => {
           <td className="whitespace-nowrap px-3 py-1 text-sm text-inherit">
             {isNaN(row.lag1) ? "--" : row.lag1}
           </td>
-          <td className="whitespace-nowrap px-3 py-1 text-sm text-inherit">
-            ...
-          </td>
-          <td className="whitespace-nowrap px-3 py-1 text-sm text-inherit">
-            {isNaN(row.lag2) ? "--" : row.lag2}
-          </td>
+          {d > 1 && (
+            <td className="whitespace-nowrap px-3 py-1 text-sm text-inherit">
+              ...
+            </td>
+          )}
+
+          {d > 0 && (
+            <td className="whitespace-nowrap px-3 py-1 text-sm text-inherit">
+              {isNaN(row.lag2) ? "--" : row.lag2}
+            </td>
+          )}
+
           <td className="whitespace-nowrap px-3 py-1 text-sm text-inherit">
             {row.sales}
           </td>
@@ -58,10 +66,6 @@ const TableRows = ({ data }: { data: Row2[] }) => {
 export const Table3 = ({ data }: { data: Row2[] }) => {
   const { state, dispatch } = useContext(AppContext);
 
-  const effectiveGap =
-    state.problemConfig.forecastHorizon -
-    state.problemConfig.featureEngineeringEnd;
-
   const lag1 =
     state.problemConfig.forecastHorizon -
     state.problemConfig.featureEngineeringEnd;
@@ -69,6 +73,8 @@ export const Table3 = ({ data }: { data: Row2[] }) => {
   const lag2 =
     state.problemConfig.forecastHorizon -
     state.problemConfig.featureEngineeringStart;
+
+  const d = lag2 - lag1;
 
   return (
     <div className="overflow-x-auto max-h-96">
@@ -91,20 +97,25 @@ export const Table3 = ({ data }: { data: Row2[] }) => {
               scope="col"
               className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
             >
-              Sales Lag {lag1}
+              Sales (Lag {lag1})
             </th>
-            <th
-              scope="col"
-              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-            >
-              ...
-            </th>
-            <th
-              scope="col"
-              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-            >
-              Sales Lag {lag2}
-            </th>
+            {d > 1 && (
+              <th
+                scope="col"
+                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              >
+                ...
+              </th>
+            )}
+            {d > 0 && (
+              <th
+                scope="col"
+                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              >
+                Sales (Lag {lag2})
+              </th>
+            )}
+
             <th
               scope="col"
               className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
