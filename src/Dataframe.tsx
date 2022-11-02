@@ -83,6 +83,8 @@ export class DataFrame {
     if (!this.columns) return this;
 
     const lastTime = this.timeIndex.values[this.timeIndex.values.length - 1];
+
+    if (!lastTime) return this;
     for (let i = 0; i < gap; i++) {
       this.timeIndex.values.push({
         prefix: lastTime.prefix,
@@ -99,7 +101,7 @@ export class DataFrame {
     const lastGoodIdx = this.target.values.length - forecastHorizon - 1;
 
     const lastTarget = this.target.values[lastGoodIdx];
-
+    if (!lastTarget) return this;
     for (let i = 1; i < forecastHorizon + gap + 1; i++) {
       this.target.values[lastGoodIdx + i] = {
         prefix: lastTarget.prefix,

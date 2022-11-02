@@ -46,7 +46,7 @@ function App() {
     <ThemeContext.Provider value={theme}>
       <AppContext.Provider value={{ state, dispatch }}>
         <div className="mx-auto w-1/2">
-          <div className="sticky top-0 bg-white border-b py-2 justify-center">
+          <div className="sticky top-0 bg-white border-b py-2 justify-center z-10">
             <Configuration />
           </div>
           <div className="bg-white py-3">
