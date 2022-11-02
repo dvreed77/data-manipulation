@@ -2,13 +2,10 @@ import { useContext } from "react";
 import { ThemeContext, useDataFrameDimensions } from "./App";
 import { Bracket } from "./Bracket";
 import { DataFrame, DataFrameRenderer } from "./Dataframe";
+import { AppContext } from "./reducer";
 import { ProblemConfig } from "./types";
 
-interface IProps {
-  problemConfig: ProblemConfig;
-  drawWindows?: boolean;
-}
-export const Data2 = ({ problemConfig, drawWindows = false }: IProps) => {
+export const Data2 = () => {
   const {
     cellGap,
     cellSize,
@@ -20,6 +17,9 @@ export const Data2 = ({ problemConfig, drawWindows = false }: IProps) => {
     marginTop,
   } = useContext(ThemeContext);
 
+  const { state, dispatch } = useContext(AppContext);
+
+  const { problemConfig } = state;
   let df1 = new DataFrame({
     nCols: 2,
     nRows: 10,
