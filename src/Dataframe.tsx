@@ -117,12 +117,26 @@ export class DataFrame {
     return this.target.values.length;
   }
 
+  get nRows3() {
+    const targetLength = this.target.values.length;
+    const timeIndexLength = this.timeIndex.values.length;
+    const columnsLength = Math.max(...this.columns.map((d) => d.values.length));
+
+    return Math.max(targetLength, timeIndexLength, columnsLength);
+  }
+
   draw() {
     return null;
   }
 }
 
-export function DataFrameRenderer({ dataframe: df }: { dataframe: DataFrame }) {
+export function DataFrameRenderer({
+  dataframe: df,
+  drawTarget = true,
+}: {
+  dataframe: DataFrame;
+  drawTarget?: boolean;
+}) {
   const {
     cellGap,
     cellSize,
@@ -159,9 +173,11 @@ export function DataFrameRenderer({ dataframe: df }: { dataframe: DataFrame }) {
           ))}
         </g>
         {/* Draw Target */}
-        <g transform={`translate(${cellSize + gap1 + dataWidth + gap2}, 0)`}>
-          <SeriesRenderer series={df.target} />
-        </g>
+        {drawTarget && (
+          <g transform={`translate(${cellSize + gap1 + dataWidth + gap2}, 0)`}>
+            <SeriesRenderer series={df.target} />
+          </g>
+        )}
       </g>
       <g transform={`translate(${marginLeft}, ${marginTop - 5})`}>
         <text
@@ -189,16 +205,18 @@ export function DataFrameRenderer({ dataframe: df }: { dataframe: DataFrame }) {
             </g>
           ))}
         </g>
-        <g transform={`translate(${cellSize + gap1 + dataWidth + gap2}, 0)`}>
-          <text
-            x={cellSize / 2}
-            y={0}
-            fontSize={cellSize * 0.4}
-            textAnchor="middle"
-          >
-            {df.target.name}
-          </text>
-        </g>
+        {drawTarget && (
+          <g transform={`translate(${cellSize + gap1 + dataWidth + gap2}, 0)`}>
+            <text
+              x={cellSize / 2}
+              y={0}
+              fontSize={cellSize * 0.4}
+              textAnchor="middle"
+            >
+              {df.target.name}
+            </text>
+          </g>
+        )}
       </g>
     </>
   );

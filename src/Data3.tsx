@@ -8,11 +8,11 @@ interface IProps {
   nDays: number;
 }
 export const Data3 = ({ nDays }: IProps) => {
-  const { cellGap, cellSize, marginTop } = useContext(ThemeContext);
+  const { cellGap, cellSize, marginTop, marginBottom } =
+    useContext(ThemeContext);
 
   const { state } = useContext(AppContext);
 
-  console.log(nDays);
   const { problemConfig } = state;
   let df1 = new DataFrame({
     nCols: 2,
@@ -32,37 +32,41 @@ export const Data3 = ({ nDays }: IProps) => {
 
   const fmBounds = {
     lower: -problemConfig.featureEngineeringStart,
-    upper: 10 - problemConfig.forecastHorizon,
+    upper: nDays - problemConfig.forecastHorizon,
   };
 
   const fmBounds2 = {
     lower: Math.max(
       -problemConfig.featureEngineeringStart,
-      10 - problemConfig.forecastHorizon
+      nDays - problemConfig.forecastHorizon
     ),
     upper:
-      10 -
+      nDays -
       problemConfig.forecastHorizon +
       (problemConfig.forecastHorizon - problemConfig.featureEngineeringEnd),
   };
 
   const fmBounds3 = {
-    lower: 10 - problemConfig.forecastHorizon,
+    lower: Math.max(nDays - problemConfig.forecastHorizon, 0),
     upper: Math.max(
       -problemConfig.featureEngineeringStart,
-      10 - problemConfig.forecastHorizon
+      nDays - problemConfig.forecastHorizon
     ),
   };
 
   const df1Dims = useDataFrameDimensions(df1);
   const df2Dims = useDataFrameDimensions(df2);
 
+  const maxRows = df2.nRows3;
+
+  const height =
+    marginTop + (cellSize + cellGap) * maxRows + cellGap + marginBottom;
   return (
-    <svg width={1000} height={1000}>
+    <svg width={1000} height={height}>
       <DataFrameRenderer dataframe={df1} />
 
       <g transform={`translate(${df1Dims.width + 100}, 0)`}>
-        <DataFrameRenderer dataframe={df2} />
+        <DataFrameRenderer dataframe={df2} drawTarget={false} />
         <g
           transform={`translate(${df2Dims.width + 20}, ${
             marginTop + fmBounds.lower * (cellSize + cellGap)
@@ -77,7 +81,7 @@ export const Data3 = ({ nDays }: IProps) => {
           )}
         </g>
         <g
-          transform={`translate(${df2Dims.width + 20}, ${
+          transform={`translate(${df2Dims.width + 20 - cellSize}, ${
             marginTop + fmBounds2.lower * (cellSize + cellGap)
           })`}
         >
@@ -92,7 +96,7 @@ export const Data3 = ({ nDays }: IProps) => {
           )}
         </g>
         <g
-          transform={`translate(${df2Dims.width + 20}, ${
+          transform={`translate(${df2Dims.width + 20 - cellSize}, ${
             marginTop + fmBounds3.lower * (cellSize + cellGap)
           })`}
         >

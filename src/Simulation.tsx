@@ -3,6 +3,7 @@ import { VegaLite } from "react-vega";
 import { Data3 } from "./Data3";
 import { AppContext } from "./reducer";
 import { generateData } from "./utils";
+import ReactMarkdown from "react-markdown";
 
 export const Simulation = () => {
   const nDays = 200;
@@ -61,66 +62,66 @@ export const Simulation = () => {
   return (
     <div>
       <div>
-        Imagine that a user has uploaded {uploadedData.length} days of data,
-        from {uploadedData[0].date.toLocaleDateString()} to{" "}
-        {uploadedData[uploadedData.length - 1].date.toLocaleDateString()}.
+        <ReactMarkdown className="prose">
+          {`
+Imagine that a user has uploaded **${
+            uploadedData.length
+          } days** of data, from **${uploadedData[0].date.toLocaleDateString()}** to **${uploadedData[
+            uploadedData.length - 1
+          ].date.toLocaleDateString()}**.`}
+        </ReactMarkdown>
       </div>
       <VegaLite spec={spec} data={{ uploadedData, marks }} />
       <div>
-        Based upon the problem configuration, we can use this data to forecast
-        the next {effectiveGap} days, up until the{" "}
-        {marks.predEnd.toLocaleDateString()}.
-      </div>
-      <div>
-        Now we are in the future and the user wants to upload some new data to
-        predict on:
+        <ReactMarkdown className="prose">
+          {`
+Based upon the problem configuration, we can use this data to forecast the next **${effectiveGap} days**, from ${marks.predStart.toLocaleDateString()} to the ${marks.predEnd.toLocaleDateString()}.
+       
+Now we are in the future and the user wants to upload some new data to predict on. There are 4 possible scenarios:
+
+## Not Enough Data
+
+The user needs to upload at least enough data to account for the all the lags, so in this case **${featureEngineeringWindowWidth} days**. If the user were to upload less than that (**${
+            featureEngineeringWindowWidth - 1
+          } days**) of data, there would not be enough data to account for all the lags.
+`}
+        </ReactMarkdown>
+
+        <Data3 nDays={featureEngineeringWindowWidth - 1} />
+
+        <ReactMarkdown className="prose">
+          {`
+## Predicting a Single Day
+
+If the user wanted to predict a single day, then the user needs to upload **${featureEngineeringWindowWidth} days** of data.
+`}
+        </ReactMarkdown>
+
+        <Data3 nDays={featureEngineeringWindowWidth} />
+
+        <ReactMarkdown className="prose">
+          {`
+## Predicting Multiple Days
+
+If the user wanted to predict multiple days, then the user could upload **${
+            featureEngineeringWindowWidth + effectiveGap - 1
+          } days** of data.`}
+        </ReactMarkdown>
+
+        <Data3 nDays={featureEngineeringWindowWidth + effectiveGap - 1} />
+
         <div>
-          <button
-            type="button"
-            className="relative inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            Not Enough Data
-          </button>
-          <button
-            type="button"
-            className="relative inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            Enough to Predict a Single Point
-          </button>
-          <button
-            type="button"
-            className="relative inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            Enough to Predict Multiple Points
-          </button>
-          <button
-            type="button"
-            className="relative inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            Too Much Data
-          </button>
-        </div>
-        <div>
-          The user needs to upload at least enough data to account for the all
-          the lags, so in this case {featureEngineeringWindowWidth} days. If the
-          user were to upload {featureEngineeringWindowWidth - 1} days of data,
-          there would not be enough data to account for all the lags.
-          <Data3 nDays={featureEngineeringWindowWidth - 1} />
-        </div>
-        <div>
-          If the user wanted to predict a single day, then the user would only
-          need {featureEngineeringWindowWidth} days of data.
-          <Data3 nDays={featureEngineeringWindowWidth} />
-        </div>
-        <div>
-          If the user wanted to predict multiple days, then the user could{" "}
-          {featureEngineeringWindowWidth + effectiveGap - 1} days of data.
-          upload
-          <Data3 nDays={featureEngineeringWindowWidth + effectiveGap - 1} />
-        </div>
-        <div>
-          More days than {featureEngineeringWindowWidth + effectiveGap + 1} days
-          of data, would give predictions, the user already knows about
+          <ReactMarkdown className="prose">
+            {`
+## Uploading Too Much Data
+
+More days than ${
+              featureEngineeringWindowWidth + effectiveGap + 1
+            } days of data, would give predictions, the user already knows about ${
+              featureEngineeringWindowWidth + effectiveGap - 1
+            } days** of data.`}
+          </ReactMarkdown>
+
           <Data3 nDays={featureEngineeringWindowWidth + effectiveGap + 1} />
         </div>
       </div>
