@@ -41,7 +41,7 @@ function transformData({ data, selectedRow, lag1, lag2 }: ITransformProps) {
   if (feEndIdx - feStartIdx > 1) {
     newData.push({
       key: feStartIdx + 1,
-      keyLabel: `${feStartIdx + 1}-${feEndIdx - 1}`,
+      keyLabel: `...`,
       date: "...",
       sales: "...",
       class: "bg-green-500",
@@ -84,30 +84,6 @@ function transformData({ data, selectedRow, lag1, lag2 }: ITransformProps) {
 
   newData.push(...data2.slice(selectedRow + 1));
 
-  // const grp1 = data.slice(0, idx1);
-  // const gap1 = [
-  //   { ...data[feStartIdx], class: "bg-green-500 border-t border-green-700" },
-  //   {
-  //     key: `${feStartIdx + 1}-${feEndIdx - 1}`,
-  //     date: undefined,
-  //     sales: "...",
-  //     class: "bg-green-500",
-  //   },
-  //   { ...data[idx2], class: "bg-green-500 border-b border-green-700" },
-  //   { ...data[idx2 + 1], class: "" },
-  //   {
-  //     key: `${idx2 + 2}-${selectedRow - 2}`,
-  //     date: undefined,
-  //     sales: "...",
-  //     class: "",
-  //   },
-  //   { ...data[selectedRow - 1], class: "" },
-  //   { ...data[selectedRow], class: "bg-red-500 border-y border-red-800" },
-  // ];
-  // const grp2 = data.slice(selectedRow + 1);
-
-  // const transformedData = [...grp1, ...gap1, ...grp2];
-
   return newData;
 }
 const TableRows = ({ data }: { data: Row[] }) => {
@@ -136,9 +112,6 @@ const TableRows = ({ data }: { data: Row[] }) => {
       behavior: "smooth",
       block: "center",
     });
-
-    console.log("element1", element);
-    console.log("scrolling to row", state.selectedRow);
   }, [state.selectedRow, state.problemConfig]);
 
   return (

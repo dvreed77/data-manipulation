@@ -1,23 +1,49 @@
 import { Row } from "./types";
 
-export function generateData(effectiveGap?: number): Row[] {
-  const nDays = 100;
-  const today = new Date();
+interface IProps {
+  nDays?: number;
+  effectiveGap?: number;
+  endDate?: Date;
+  startDate?: Date;
+  gap?: number;
+}
+
+export function generateData({
+  nDays = 100,
+  effectiveGap,
+  endDate = new Date(),
+  startDate,
+  gap = 0,
+}: IProps = {}): Row[] {
   const day = 60 * 60 * 24 * 1000;
-  const gap = 30;
-  const startDate = new Date(today.getTime() - day * (nDays + gap));
+
+  if (endDate && !startDate) {
+    startDate = new Date(endDate.getTime() - day * (nDays + gap - 1));
+  }
+
+  const anchor = Math.round(new Date().getTime() / day);
+  startDate = startDate || new Date();
+
+  const signals: [number, (i: number) => number][] = [
+    [0.5, (i) => Math.cos(i)],
+    [2, (i) => Math.cos(i / 7)],
+    [2, (i) => Math.cos(i / 30)],
+    [0.5, (i) => Math.cos(i / 90)],
+    [0.1, (i) => Math.cos(i / 365)],
+  ];
+
+  const max = signals.reduce((acc, [weight, signal]) => acc + weight, 0);
+
   const data = [];
   for (let i = 0; i < nDays; i++) {
-    const daily = Math.cos(i);
-    const weekly = Math.cos(i / 7);
-    const monthly = Math.cos(i / 30);
-    const yearly = Math.cos(i / 365);
-    const seasonal = Math.cos(i / 90);
     data.push({
       key: i,
       date: new Date(startDate.getTime() + i * day),
       f_1: i,
-      sales: 0.2 * weekly + 0.4 * monthly + yearly + seasonal + 0.1 * daily,
+      sales: signals.reduce(
+        (acc, [weight, signal]) => acc + weight * signal(anchor + i),
+        0
+      ),
     });
   }
 
@@ -31,18 +57,10 @@ export function generateData(effectiveGap?: number): Row[] {
       });
     }
   }
-  const minValue = Math.min(
-    ...data.map((d) => d.sales).filter((d) => !isNaN(d))
-  );
-  const maxValue = Math.max(
-    ...data.map((d) => d.sales).filter((d) => !isNaN(d))
-  );
 
   const normalize = data.map((d) => ({
     ...d,
-    sales: Math.round(
-      ((d.sales - minValue) / (maxValue - minValue)) * 1000 + 100
-    ),
+    sales: Math.round(((d.sales - max) / (2 * max)) * 50 + 60),
   }));
   return normalize;
 }

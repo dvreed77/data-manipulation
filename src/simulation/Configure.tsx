@@ -80,9 +80,13 @@ export const Configure = () => {
         <div className="ml-3">
           <div className="text-sm text-blue-800">
             <p>
-              User uploaded 2000 rows of data that starts on{" "}
-              <b>{data[0].date.toLocaleDateString()}</b> and ends on{" "}
+              User uploaded {data.length - effectiveGap} rows of data that
+              starts on <b>{data[0].date.toLocaleDateString()}</b> and ends on{" "}
               <b>{data[data.length - 1].date.toLocaleDateString()}</b>.
+            </p>
+            <p>
+              Based on this Problem configuration, we can predict{" "}
+              <b>{effectiveGap}</b> days off the end of the data set.
             </p>
           </div>
         </div>
