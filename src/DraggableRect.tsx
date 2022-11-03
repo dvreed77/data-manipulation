@@ -14,6 +14,7 @@ interface IProps {
   color?: string;
   offset?: number;
 }
+
 export const DraggableRect = ({
   x1,
   x2,
