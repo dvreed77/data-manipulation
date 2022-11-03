@@ -60,9 +60,9 @@ export const Simulation = () => {
     1;
 
   return (
-    <div>
+    <div className="my-10">
       <div>
-        <ReactMarkdown className="prose">
+        <ReactMarkdown className="prose text-left mx-auto mb-5">
           {`
 Imagine that a user has uploaded **${
             uploadedData.length
@@ -73,7 +73,7 @@ Imagine that a user has uploaded **${
       </div>
       <VegaLite spec={spec} data={{ uploadedData, marks }} />
       <div>
-        <ReactMarkdown className="prose">
+        <ReactMarkdown className="prose text-left mx-auto my-5">
           {`
 Based upon the problem configuration, we can use this data to forecast the next **${effectiveGap} days**, from ${marks.predStart.toLocaleDateString()} to the ${marks.predEnd.toLocaleDateString()}.
        
@@ -87,9 +87,11 @@ The user needs to upload at least enough data to account for the all the lags, s
 `}
         </ReactMarkdown>
 
-        <Data3 nDays={featureEngineeringWindowWidth - 1} />
+        <div className="mx-auto text-center flex justify-center">
+          <Data3 nDays={featureEngineeringWindowWidth - 1} />
+        </div>
 
-        <ReactMarkdown className="prose">
+        <ReactMarkdown className="prose text-left mx-auto my-5">
           {`
 ## Predicting a Single Day
 
@@ -97,32 +99,40 @@ If the user wanted to predict a single day, then the user needs to upload **${fe
 `}
         </ReactMarkdown>
 
-        <Data3 nDays={featureEngineeringWindowWidth} />
+        <div className="mx-auto text-center flex justify-center">
+          <Data3 nDays={featureEngineeringWindowWidth} />
+        </div>
 
-        <ReactMarkdown className="prose">
+        <ReactMarkdown className="prose text-left mx-auto my-5">
           {`
 ## Predicting Multiple Days
 
-If the user wanted to predict multiple days, then the user could upload **${
+If the user wanted to predict multiple days, then they could upload between **${featureEngineeringWindowWidth} to ${
             featureEngineeringWindowWidth + effectiveGap - 1
-          } days** of data.`}
+          } days** of data.  The most days that can be predicted is **${effectiveGap} days**.`}
         </ReactMarkdown>
 
-        <Data3 nDays={featureEngineeringWindowWidth + effectiveGap - 1} />
+        <div className="mx-auto text-center flex justify-center">
+          <Data3 nDays={featureEngineeringWindowWidth + effectiveGap - 1} />
+        </div>
 
         <div>
-          <ReactMarkdown className="prose">
+          <ReactMarkdown className="prose text-left mx-auto my-5">
             {`
 ## Uploading Too Much Data
 
-More days than ${
-              featureEngineeringWindowWidth + effectiveGap + 1
-            } days of data, would give predictions, the user already knows about ${
+Uploading more than **${
               featureEngineeringWindowWidth + effectiveGap - 1
-            } days** of data.`}
+            } days** of data, would give predictions the user already knows about. 
+            
+For example, if the user uploads **${
+              featureEngineeringWindowWidth + effectiveGap + 1
+            } days** of data, we would be trying to predict values for 2 days that were already uploaded.`}
           </ReactMarkdown>
 
-          <Data3 nDays={featureEngineeringWindowWidth + effectiveGap + 1} />
+          <div className="mx-auto text-center flex justify-center">
+            <Data3 nDays={featureEngineeringWindowWidth + effectiveGap + 1} />
+          </div>
         </div>
       </div>
     </div>

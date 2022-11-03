@@ -5,8 +5,20 @@ import { DataFrame, DataFrameRenderer } from "./Dataframe";
 import { AppContext } from "./reducer";
 
 export const ModelTraining = () => {
-  const theme = useContext(ThemeContext);
-  const { state, dispatch } = useContext(AppContext);
+  const {
+    cellGap,
+    cellSize,
+    marginTop,
+    marginBottom,
+    marginLeft,
+    marginRight,
+    fpBorder,
+    gap1,
+    targetBorder,
+    feBorder,
+    gap2,
+  } = useContext(ThemeContext);
+  const { state } = useContext(AppContext);
 
   const { problemConfig } = state;
 
@@ -26,50 +38,52 @@ export const ModelTraining = () => {
   const df1Dims = useDataFrameDimensions(df1);
   const df2Dims = useDataFrameDimensions(df2);
 
+  const maxRows = df2.nRows3;
+  const height =
+    marginTop + (cellSize + cellGap) * maxRows + cellGap + marginBottom;
   return (
-    <svg width={1000} height={1000}>
+    <svg width={700} height={height}>
       <rect
         x={0}
-        y={theme.marginTop + (theme.cellSize + theme.cellGap) * forecastPt + 2}
+        y={marginTop + (cellSize + cellGap) * forecastPt + 2}
         width={
-          theme.marginLeft +
+          marginLeft +
           df1Dims.width +
-          theme.marginRight +
+          marginRight +
           +80 +
-          theme.marginLeft +
+          marginLeft +
           df2Dims.width +
-          theme.marginRight
+          marginRight
         }
-        height={theme.cellSize - 4}
+        height={cellSize - 4}
         fill="orange"
         opacity={0.5}
       />
 
       <rect
-        x={theme.marginLeft - 10}
+        x={marginLeft - 10}
         y={
-          theme.marginTop +
-          (theme.cellSize + theme.cellGap) *
-            (forecastPt + problemConfig.forecastHorizon) +
+          marginTop +
+          (cellSize + cellGap) * (forecastPt + problemConfig.forecastHorizon) +
           2
         }
         width={df1Dims.width + 20}
-        height={theme.cellSize - 4}
+        height={cellSize - 4}
         fill="red"
         opacity={0.5}
       />
 
       <rect
-        x={theme.marginLeft - 10}
+        x={marginLeft - 10}
         y={
-          theme.marginTop +
-          (theme.cellSize + theme.cellGap) *
+          marginTop +
+          (cellSize + cellGap) *
             (forecastPt + problemConfig.featureEngineeringStart) +
           2
         }
         width={df1Dims.width + 20}
         height={
-          theme.cellSize *
+          cellSize *
             (problemConfig.featureEngineeringEnd -
               problemConfig.featureEngineeringStart +
               1) -
@@ -82,49 +96,42 @@ export const ModelTraining = () => {
       <DataFrameRenderer dataframe={df1} />
 
       <rect
-        x={theme.marginLeft}
-        y={theme.marginTop + (theme.cellSize + theme.cellGap) * forecastPt}
-        width={theme.cellSize}
-        height={theme.cellSize}
-        stroke={theme.fpBorder}
+        x={marginLeft}
+        y={marginTop + (cellSize + cellGap) * forecastPt}
+        width={cellSize}
+        height={cellSize}
+        stroke={fpBorder}
         strokeWidth={2}
         fill="none"
       />
 
       <rect
-        x={theme.marginLeft + theme.cellSize + theme.gap1}
+        x={marginLeft + cellSize + gap1}
         y={
-          theme.marginTop +
-          (theme.cellSize + theme.cellGap) *
+          marginTop +
+          (cellSize + cellGap) *
             (forecastPt + problemConfig.featureEngineeringStart)
         }
         width={df1Dims.dataWidth}
         height={
-          (theme.cellSize + theme.cellGap) *
+          (cellSize + cellGap) *
           (problemConfig.featureEngineeringEnd -
             problemConfig.featureEngineeringStart +
             1)
         }
-        stroke={theme.feBorder}
+        stroke={feBorder}
         strokeWidth={2}
         fill="none"
       />
       <rect
-        x={
-          theme.marginLeft +
-          theme.cellSize +
-          theme.gap1 +
-          df1Dims.dataWidth +
-          theme.gap2
-        }
+        x={marginLeft + cellSize + gap1 + df1Dims.dataWidth + gap2}
         y={
-          theme.marginTop +
-          (theme.cellSize + theme.cellGap) *
-            (forecastPt + problemConfig.forecastHorizon)
+          marginTop +
+          (cellSize + cellGap) * (forecastPt + problemConfig.forecastHorizon)
         }
-        width={theme.cellSize}
-        height={theme.cellSize}
-        stroke={theme.targetBorder}
+        width={cellSize}
+        height={cellSize}
+        stroke={targetBorder}
         strokeWidth={2}
         fill="none"
       />
@@ -134,19 +141,19 @@ export const ModelTraining = () => {
         {/* <Marker /> */}
         <g
           transform={`translate(${
-            df2Dims.width + theme.marginLeft + theme.marginRight
-          }, ${theme.marginTop})`}
+            df2Dims.width + marginLeft + marginRight
+          }, ${marginTop})`}
         >
           {/* <Marker /> */}
 
           <Bracket
-            y={-problemConfig.featureEngineeringStart * theme.cellSize}
+            y={-problemConfig.featureEngineeringStart * cellSize}
             width={10}
             height={
               (df1.nRows -
                 -problemConfig.featureEngineeringStart -
                 problemConfig.forecastHorizon) *
-              theme.cellSize
+              cellSize
             }
             label="Can be used for Training"
           />
@@ -155,49 +162,43 @@ export const ModelTraining = () => {
               (df2.nRows2 -
                 (problemConfig.forecastHorizon -
                   problemConfig.featureEngineeringEnd)) *
-              theme.cellSize
+              cellSize
             }
             width={10}
             height={
               (problemConfig.forecastHorizon -
                 problemConfig.featureEngineeringEnd) *
-              theme.cellSize
+              cellSize
             }
             label="Can be used for Predict"
           />
         </g>
 
         <rect
-          x={theme.marginLeft}
-          y={theme.marginTop + (theme.cellSize + theme.cellGap) * forecastPt}
-          width={theme.cellSize}
-          height={theme.cellSize}
-          stroke={theme.fpBorder}
+          x={marginLeft}
+          y={marginTop + (cellSize + cellGap) * forecastPt}
+          width={cellSize}
+          height={cellSize}
+          stroke={fpBorder}
           strokeWidth={2}
           fill="none"
         />
 
         <rect
-          x={theme.marginLeft + theme.cellSize + theme.gap1 + theme.cellSize}
-          y={theme.marginTop + (theme.cellSize + theme.cellGap) * forecastPt}
-          width={df2Dims.dataWidth - theme.cellSize}
-          height={theme.cellSize}
-          stroke={theme.feBorder}
+          x={marginLeft + cellSize + gap1 + cellSize}
+          y={marginTop + (cellSize + cellGap) * forecastPt}
+          width={df2Dims.dataWidth - cellSize}
+          height={cellSize}
+          stroke={feBorder}
           strokeWidth={2}
           fill="none"
         />
         <rect
-          x={
-            theme.marginLeft +
-            theme.cellSize +
-            theme.gap1 +
-            df2Dims.dataWidth +
-            theme.gap2
-          }
-          y={theme.marginTop + (theme.cellSize + theme.cellGap) * forecastPt}
-          width={theme.cellSize}
-          height={theme.cellSize}
-          stroke={theme.targetBorder}
+          x={marginLeft + cellSize + gap1 + df2Dims.dataWidth + gap2}
+          y={marginTop + (cellSize + cellGap) * forecastPt}
+          width={cellSize}
+          height={cellSize}
+          stroke={targetBorder}
           strokeWidth={2}
           fill="none"
         />

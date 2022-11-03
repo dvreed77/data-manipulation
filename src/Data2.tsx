@@ -125,8 +125,12 @@ export const Data2 = () => {
   const df1Dims = useDataFrameDimensions(df1);
   const df2Dims = useDataFrameDimensions(df2);
 
+  const maxRows = df2.nRows3;
+  const height =
+    marginTop + (cellSize + cellGap) * maxRows + cellGap + marginBottom;
+
   return (
-    <svg width={1000} height={1000}>
+    <svg width={700} height={height}>
       <DataFrameRenderer dataframe={df1} />
       {/* {drawWindows && (
       <>

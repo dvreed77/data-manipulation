@@ -45,31 +45,33 @@ function App() {
   return (
     <ThemeContext.Provider value={theme}>
       <AppContext.Provider value={{ state, dispatch }}>
-        <div className="mx-auto w-1/2">
+        <div>
           <div className="sticky top-0 bg-white border-b py-2 justify-center z-10">
             <Configuration />
           </div>
-          <div className="bg-white py-3">
+          <div className="bg-white py-3 mx-auto w-1/2 text-center">
             <h2 className="font-semibold text-2xl">Model Training</h2>
           </div>
           <hr />
-          <div>
+          <div className="mx-auto w-1/2 text-center flex justify-center">
             <ModelTraining />
           </div>
 
-          <div className="bg-white py-3">
+          <div className="bg-white py-3 mx-auto w-1/2 text-center">
             <h2 className="font-semibold text-2xl">Prediction</h2>
           </div>
           <hr />
-          <div>
+          <div className="mx-auto w-1/2 text-center flex justify-center">
             <Data2 />
           </div>
 
-          <div className="bg-white py-3">
+          <div className="bg-white py-3 mx-auto w-1/2 text-center">
             <h2 className="font-semibold text-2xl">Simulation</h2>
           </div>
           <hr />
-          <Simulation />
+          <div className="mx-auto w-1/2 text-center flex justify-center">
+            <Simulation />
+          </div>
         </div>
       </AppContext.Provider>
     </ThemeContext.Provider>

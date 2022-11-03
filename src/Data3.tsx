@@ -62,11 +62,11 @@ export const Data3 = ({ nDays }: IProps) => {
   const height =
     marginTop + (cellSize + cellGap) * maxRows + cellGap + marginBottom;
   return (
-    <svg width={1000} height={height}>
+    <svg width={700} height={height}>
       <DataFrameRenderer dataframe={df1} />
 
       <g transform={`translate(${df1Dims.width + 100}, 0)`}>
-        <DataFrameRenderer dataframe={df2} drawTarget={false} />
+        <DataFrameRenderer dataframe={df2} />
         <g
           transform={`translate(${df2Dims.width + 20}, ${
             marginTop + fmBounds.lower * (cellSize + cellGap)
@@ -81,7 +81,7 @@ export const Data3 = ({ nDays }: IProps) => {
           )}
         </g>
         <g
-          transform={`translate(${df2Dims.width + 20 - cellSize}, ${
+          transform={`translate(${df2Dims.width + 20}, ${
             marginTop + fmBounds2.lower * (cellSize + cellGap)
           })`}
         >
@@ -96,7 +96,7 @@ export const Data3 = ({ nDays }: IProps) => {
           )}
         </g>
         <g
-          transform={`translate(${df2Dims.width + 20 - cellSize}, ${
+          transform={`translate(${df2Dims.width + 20}, ${
             marginTop + fmBounds3.lower * (cellSize + cellGap)
           })`}
         >

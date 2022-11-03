@@ -76,7 +76,22 @@ export class DataFrame {
     });
     this.columns = newColumns;
     this.nCols = newColumns.length;
-    this.target = this.target?.copy().lag(-forecastHorizon, true);
+  }
+
+  private lagTarget({ gap = 0, feWindow = 1, forecastHorizon = 0 }) {
+    // TODO: HACK to get target values right
+    const targetValues = this.target.values.map((d) => d.value);
+
+    this.target.values = this.timeIndex.values.map((v) => ({
+      prefix: "t_",
+      value: v.value + forecastHorizon,
+      color: targetValues.includes(v.value + forecastHorizon)
+        ? "#DCE3F0"
+        : "#8698BA",
+      textColor: targetValues.includes(v.value + forecastHorizon)
+        ? "#606F8C"
+        : "#DCE3F0",
+    }));
   }
 
   transform({ gap = 0, feWindow = 0, forecastHorizon = 1 }) {
@@ -97,19 +112,8 @@ export class DataFrame {
     this.timeIndex.nRows = this.timeIndex.values.length;
 
     this.transformData({ gap, feWindow, forecastHorizon });
+    this.lagTarget({ gap, feWindow, forecastHorizon });
 
-    const lastGoodIdx = this.target.values.length - forecastHorizon - 1;
-
-    const lastTarget = this.target.values[lastGoodIdx];
-    if (!lastTarget) return this;
-    for (let i = 1; i < forecastHorizon + gap + 1; i++) {
-      this.target.values[lastGoodIdx + i] = {
-        prefix: lastTarget.prefix,
-        value: lastTarget.value + i,
-        color: "#8698BA",
-        textColor: "#DCE3F0",
-      };
-    }
     return this;
   }
 
@@ -173,11 +177,10 @@ export function DataFrameRenderer({
           ))}
         </g>
         {/* Draw Target */}
-        {drawTarget && (
-          <g transform={`translate(${cellSize + gap1 + dataWidth + gap2}, 0)`}>
-            <SeriesRenderer series={df.target} />
-          </g>
-        )}
+
+        <g transform={`translate(${cellSize + gap1 + dataWidth + gap2}, 0)`}>
+          <SeriesRenderer series={df.target} />
+        </g>
       </g>
       <g transform={`translate(${marginLeft}, ${marginTop - 5})`}>
         <text
@@ -205,18 +208,17 @@ export function DataFrameRenderer({
             </g>
           ))}
         </g>
-        {drawTarget && (
-          <g transform={`translate(${cellSize + gap1 + dataWidth + gap2}, 0)`}>
-            <text
-              x={cellSize / 2}
-              y={0}
-              fontSize={cellSize * 0.4}
-              textAnchor="middle"
-            >
-              {df.target.name}
-            </text>
-          </g>
-        )}
+
+        <g transform={`translate(${cellSize + gap1 + dataWidth + gap2}, 0)`}>
+          <text
+            x={cellSize / 2}
+            y={0}
+            fontSize={cellSize * 0.4}
+            textAnchor="middle"
+          >
+            {df.target.name}
+          </text>
+        </g>
       </g>
     </>
   );
