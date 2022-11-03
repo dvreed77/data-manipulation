@@ -108,7 +108,10 @@ export const ModelTraining = () => {
           className="cursor-pointer"
           onMouseDown={handleMouseDown}
         />
-        <g transform={`translate(${marginLeft + df1Dims.width + 50}, 2)`}>
+        <g
+          transform={`translate(${marginLeft + df1Dims.width + 50}, 2)`}
+          className="pointer-events-none"
+        >
           <line x1={-10} x2={15} y1={6} y2={6} stroke="#ffa52e" />
           <line x1={-10} x2={15} y1={12} y2={12} stroke="#ffa52e" />
           <line
