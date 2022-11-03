@@ -16,9 +16,6 @@ export const Simulation = () => {
     problemConfig.forecastHorizon - problemConfig.featureEngineeringEnd;
 
   const marks = {
-    // feStart: data[30].date,
-    // feEnd: data[30 + 1 * feWindowWidth].date,
-    // fd: data[30 + 1 * (feWindowWidth + effectiveGap)].date,
     predStart: uploadedData[nDays - 1].date,
     predEnd: new Date(
       uploadedData[nDays - 1].date.getTime() +
@@ -77,6 +74,8 @@ Imagine that a user has uploaded **${
           {`
 Based upon the problem configuration, we can use this data to forecast the next **${effectiveGap} days**, from ${marks.predStart.toLocaleDateString()} to the ${marks.predEnd.toLocaleDateString()}.
        
+# Prediction
+
 Now we are in the future and the user wants to upload some new data to predict on. There are 4 possible scenarios:
 
 ## Not Enough Data
