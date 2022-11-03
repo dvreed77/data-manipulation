@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.vega-embed summary {
+  z-index: 5 !important;
+}
