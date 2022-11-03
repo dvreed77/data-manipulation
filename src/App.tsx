@@ -11,6 +11,7 @@ import { Simulation } from "./Simulation";
 import { reducer, initialState, AppContext } from "./reducer";
 import { Configuration } from "./Configuration";
 import { ModelTraining } from "./ModelTraining";
+import ReactMarkdown from "react-markdown";
 
 export function useDataFrameDimensions(df: DataFrame) {
   const theme = useContext(ThemeContext);
@@ -46,6 +47,18 @@ function App() {
     <ThemeContext.Provider value={theme}>
       <AppContext.Provider value={{ state, dispatch }}>
         <div>
+          <ReactMarkdown className="prose text-left mx-auto my-5">
+            {`
+# Understanding Time Series Forecasting
+
+Traditional Machine Learning models, such as linear regression, can be used for time-series modelling, if the data is transformed in the proper way.
+
+In order to transform the data, we need some parameters from the user:
+
+- **Training Window**: the window of values in the past that we use to predict the future target value.
+- **Forecast Distance**: the number of values into the future that we want to predict.
+`}
+          </ReactMarkdown>
           <div className="sticky top-0 bg-white border-b py-2 justify-center z-10">
             <Configuration />
           </div>
